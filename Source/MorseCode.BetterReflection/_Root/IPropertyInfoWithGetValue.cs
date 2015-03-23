@@ -2,12 +2,12 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IPropertyInfoWithGetValue.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,15 +34,18 @@ namespace MorseCode.BetterReflection
 {
     using System.Reflection;
 
-    public interface IPropertyInfoWithGetValue<in T>
+    public interface IPropertyInfoWithGetValue
     {
+        #region Public Properties
+
         PropertyInfo PropertyInfo { get; }
 
-        object GetValue(T o);
-    }
+        #endregion
 
-    public interface IPropertyInfoWithGetValue<in T, out TValue> : IPropertyInfoWithGetValue<T>
-    {
-        new TValue GetValue(T o);
+        #region Public Methods and Operators
+
+        object GetValueUntyped(object o);
+
+        #endregion
     }
 }

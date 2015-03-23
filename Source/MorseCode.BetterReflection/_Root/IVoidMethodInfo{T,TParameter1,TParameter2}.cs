@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyValueGetterCache.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IVoidMethodInfo{T,TParameter1,TParameter2}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,12 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System.Reflection;
-
-    public interface IPropertyValueGetterCache
+    public interface IVoidMethodInfo<in T, in TParameter1, in TParameter2> : IMethodInfo<T>
     {
-        TProperty GetValue<T, TProperty>(PropertyInfo propertyInfo, T o);
+        #region Public Methods and Operators
+
+        void Invoke(T o, TParameter1 parameter1, TParameter2 parameter2);
+
+        #endregion
     }
 }

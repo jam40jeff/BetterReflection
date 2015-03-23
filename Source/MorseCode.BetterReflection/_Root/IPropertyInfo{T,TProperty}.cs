@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoCache.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IPropertyInfo{T,TProperty}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,16 +32,7 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System.Reflection;
-
-    public interface IPropertyInfoCache
+    public interface IPropertyInfo<in T, TProperty> : IPropertyInfo<T>, IPropertyInfoWithGetValue<T, TProperty>, IPropertyInfoWithSetValue<T, TProperty>
     {
-        #region Public Methods and Operators
-
-        IPropertyInfo<T> GetPropertyInfo<T>(PropertyInfo propertyInfo);
-
-        IPropertyInfo<T, TProperty> GetPropertyInfo<T, TProperty>(PropertyInfo propertyInfo);
-
-        #endregion
     }
 }

@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoFactory.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IPropertyInfoWithSetValue{T,TProperty}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,13 +32,11 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System.Reflection;
-
-    public interface IPropertyInfoFactory
+    public interface IPropertyInfoWithSetValue<in T, in TProperty> : IPropertyInfoWithSetValue<T>
     {
         #region Public Methods and Operators
 
-        IPropertyInfo<T, TProperty> CreatePropertyInfo<T, TProperty>(PropertyInfo propertyInfo);
+        void SetValue(T o, TProperty value);
 
         #endregion
     }

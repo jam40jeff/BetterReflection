@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SingletonByType.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="TypeInfo.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,14 +33,30 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Reflection;
 
-    internal class SingletonsByType : ISingletonsByType
+    public static class TypeInfoFactory
     {
-        #region Explicit Interface Methods
+        private static readonly MethodInfo GetTypeInfoGenericMethodDefinition;
 
-        T ISingletonsByType.GetOrAdd<T>(Func<T> factory)
+        private static readonly ConcurrentDictionary<Type, ITypeInfo> TypeInfoByType;
+
+        static TypeInfoFactory()
         {
-            return Helper<T>.GetOrAdd(this, factory);
+            GetTypeInfoGenericMethodDefinition = StaticReflection.GetInScopeMethodInfoInternal(() => GetTypeInfo<object>());
+        }
+
+        #region Public Methods and Operators
+
+        public static ITypeInfo GetTypeInfo(Type type)
+        {
+            return TypeInfoByType.GetOrAdd(type, t => (ITypeInfo)GetTypeInfoGenericMethodDefinition.MakeGenericMethod(t).Invoke(null, new object[0]));
+        }
+
+        public static ITypeInfo<T> GetTypeInfo<T>()
+        {
+            return Helper<T>.TypeInfo;
         }
 
         #endregion
@@ -49,18 +65,7 @@ namespace MorseCode.BetterReflection
         {
             #region Static Fields
 
-            private static readonly IAddOnlyConcurrentDictionary<SingletonsByType, T> ItemsByFactory =
-                new AddOnlyConcurrentDictionary<SingletonsByType, T>();
-
-            #endregion
-
-            // ReSharper restore StaticFieldInGenericType
-            #region Methods
-
-            internal static T GetOrAdd(SingletonsByType parent, Func<T> factory)
-            {
-                return ItemsByFactory.GetOrAdd(parent, p => factory());
-            }
+            public static readonly ITypeInfo<T> TypeInfo = new TypeInfo<T>();
 
             #endregion
         }

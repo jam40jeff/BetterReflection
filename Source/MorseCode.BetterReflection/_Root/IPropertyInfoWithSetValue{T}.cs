@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AddOnlyConcurrentDictionary.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IPropertyInfoWithSetValue{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,41 +32,11 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System;
-    using System.Collections.Generic;
-
-    public class AddOnlyConcurrentDictionary<TKey, TValue> : IAddOnlyConcurrentDictionary<TKey, TValue>
+    public interface IPropertyInfoWithSetValue<in T> : IPropertyInfoWithSetValue
     {
-        #region Fields
+        #region Public Methods and Operators
 
-        private readonly Dictionary<TKey, TValue> dictionary = new Dictionary<TKey, TValue>();
-
-        private readonly object dictionaryLock = new object();
-
-        #endregion
-
-        #region Explicit Interface Methods
-
-        TValue IAddOnlyConcurrentDictionary<TKey, TValue>.GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
-        {
-            TValue value;
-            if (this.dictionary.TryGetValue(key, out value))
-            {
-                return value;
-            }
-
-            lock (this.dictionaryLock)
-            {
-                if (this.dictionary.TryGetValue(key, out value))
-                {
-                    return value;
-                }
-
-                value = valueFactory(key);
-                this.dictionary.Add(key, value);
-                return value;
-            }
-        }
+        void SetValuePartiallyUntyped(T o, object value);
 
         #endregion
     }

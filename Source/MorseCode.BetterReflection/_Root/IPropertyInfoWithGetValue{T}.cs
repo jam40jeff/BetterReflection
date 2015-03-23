@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAddOnlyConcurrentDictionary.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IPropertyInfoWithGetValue{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,13 +32,11 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System;
-
-    public interface IAddOnlyConcurrentDictionary<TKey, TValue>
+    public interface IPropertyInfoWithGetValue<in T> : IPropertyInfoWithGetValue
     {
         #region Public Methods and Operators
 
-        TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory);
+        object GetValue(T o);
 
         #endregion
     }

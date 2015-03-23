@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyInfoFactory.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IMethodInfo.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,36 +32,22 @@
 
 namespace MorseCode.BetterReflection
 {
+    using System;
     using System.Reflection;
 
-    internal class PropertyInfoFactory : IPropertyInfoFactory
+    public interface IMethodInfo
     {
-        #region Fields
+        #region Public Properties
 
-        private readonly IPropertyValueGetterCache propertyValueGetterCache;
+        MethodInfo MethodInfo { get; }
 
-        private readonly IPropertyValueSetterCache propertyValueSetterCache;
+        Type ObjectType { get; }
 
-        #endregion
+        Type[] ParameterTypes { get; }
 
-        #region Constructors and Destructors
+        Type ReturnType { get; }
 
-        public PropertyInfoFactory(
-            IPropertyValueGetterCache propertyValueGetterCache, IPropertyValueSetterCache propertyValueSetterCache)
-        {
-            this.propertyValueGetterCache = propertyValueGetterCache;
-            this.propertyValueSetterCache = propertyValueSetterCache;
-        }
-
-        #endregion
-
-        #region Explicit Interface Methods
-
-        IPropertyInfo<T, TProperty> IPropertyInfoFactory.CreatePropertyInfo<T, TProperty>(PropertyInfo propertyInfo)
-        {
-            return new PropertyInfo<T, TProperty>(
-                propertyInfo, this.propertyValueGetterCache, this.propertyValueSetterCache);
-        }
+        object InvokeFullyUntyped(object o, params object[] parameters);
 
         #endregion
     }

@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ISingletonsByType.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="ITypeInfo{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,12 +33,34 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
 
-    public interface ISingletonsByType
+    public interface ITypeInfo<T> : ITypeInfo
     {
         #region Public Methods and Operators
 
-        T GetOrAdd<T>(Func<T> factory);
+        IEnumerable<IPropertyInfo<T>> GetProperties();
+
+        IPropertyInfo<T> GetProperty(string name);
+
+        IPropertyInfo<T, TProperty> GetProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression);
+
+        IEnumerable<IMethodInfo<T>> GetMethods();
+
+        IMethodInfo<T> GetMethod(string name);
+
+        IVoidMethodInfo<T> GetVoidMethod(Expression<Func<T, Action>> methodExpression);
+
+        IVoidMethodInfo<T, TParameter1> GetVoidMethod<TParameter1>(Expression<Func<T, Action<TParameter1>>> methodExpression);
+
+        IVoidMethodInfo<T, TParameter1, TParameter2> GetVoidMethod<TParameter1, TParameter2>(Expression<Func<T, Action<TParameter1, TParameter2>>> methodExpression);
+
+        IMethodInfo<T, TReturn> GetMethod<TReturn>(Expression<Func<T, Func<TReturn>>> methodExpression);
+
+        IMethodInfo<T, TParameter1, TReturn> GetMethod<TParameter1, TReturn>(Expression<Func<T, Func<TParameter1, TReturn>>> methodExpression);
+
+        IMethodInfo<T, TParameter1, TParameter2, TReturn> GetMethod<TParameter1, TParameter2, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TReturn>>> methodExpression);
 
         #endregion
     }

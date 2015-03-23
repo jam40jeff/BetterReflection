@@ -11,7 +11,7 @@
     <AssemblyName>MorseCode.BetterReflection</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +65,7 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>3</CodeContractsAnalysisWarningLevel>
     <DocumentationFile>bin\Debug\MorseCode.BetterReflection.XML</DocumentationFile>
+    <CodeContractsInferEnsuresAutoProperties>True</CodeContractsInferEnsuresAutoProperties>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -125,6 +126,12 @@
     <AssemblyOriginatorKeyFile>..\MorseCode.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MorseCode.FrameworkExtensions">
+      <HintPath>..\packages\MorseCode.FrameworkExtensions.1.0.20.0\lib\net45\MorseCode.FrameworkExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="MorseCode.ITask">
+      <HintPath>..\packages\MorseCode.ITask.1.0.24.0\lib\net45\MorseCode.ITask.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -134,34 +141,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOnlyConcurrentDictionary.cs" />
-    <Compile Include="BetterReflectionManager.cs" />
-    <Compile Include="IAddOnlyConcurrentDictionary.cs" />
-    <Compile Include="ISingletonsByType.cs" />
-    <Compile Include="IStaticReflectionHelperProvider.cs" />
-    <Compile Include="ITypeInfoProvider.cs" />
-    <Compile Include="SingletonByType.cs" />
-    <Compile Include="PropertyValueSetterCache.cs" />
-    <Compile Include="IStaticReflectionHelper{T}.cs" />
-    <Compile Include="IPropertyInfo.cs" />
-    <Compile Include="IPropertyInfoCache.cs" />
-    <Compile Include="IPropertyInfoFactory.cs" />
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TReturn}.cs" />
+    <Compile Include="MethodInfo{T,TParameter1,TReturn}.cs" />
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2}.cs" />
+    <Compile Include="VoidMethodInfo{T,TParameter1}.cs" />
+    <Compile Include="VoidMethodInfo{T}.cs" />
+    <Compile Include="MethodInfo{T,TReturn}.cs" />
+    <Compile Include="MethodInfoCache{T}.cs" />
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TReturn}.cs" />
+    <Compile Include="IMethodInfo{T,TParameter1,TReturn}.cs" />
+    <Compile Include="IMethodInfo{T,TReturn}.cs" />
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2}.cs" />
+    <Compile Include="IVoidMethodInfo{T,TParameter1}.cs" />
+    <Compile Include="IMethodInfo{T}.cs" />
+    <Compile Include="IMethodInfo.cs" />
+    <Compile Include="IPropertyInfoWithGetValue{T,TProperty}.cs" />
     <Compile Include="IPropertyInfoWithGetValue.cs" />
-    <Compile Include="IPropertyInfoWithSetValue.cs" />
-    <Compile Include="IPropertyValueGetterCache.cs" />
-    <Compile Include="IPropertyValueSetterCache.cs" />
-    <Compile Include="IStaticReflectionHelper.cs" />
+    <Compile Include="IPropertyInfo{T,TProperty}.cs" />
+    <Compile Include="IPropertyInfoWithSetValue{T,TProperty}.cs" />
+    <Compile Include="IPropertyInfoWithSetValue{T}.cs" />
+    <Compile Include="IPropertyInfo.cs" />
     <Compile Include="ITypeInfo.cs" />
+    <Compile Include="IVoidMethodInfo{T}.cs" />
+    <Compile Include="StaticReflection.cs" />
+    <Compile Include="StaticReflection{T}.cs" />
+    <Compile Include="PropertyInfoCache{T}.cs" />
+    <Compile Include="TypeInfo{T}.cs" />
+    <Compile Include="ITypeInfo{T}.cs" />
+    <Compile Include="TypeInfoFactory.cs" />
+    <Compile Include="IPropertyInfo{T}.cs" />
+    <Compile Include="IPropertyInfoWithGetValue{T}.cs" />
+    <Compile Include="IPropertyInfoWithSetValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfo.cs" />
-    <Compile Include="PropertyInfoCache.cs" />
-    <Compile Include="PropertyInfoFactory.cs" />
-    <Compile Include="PropertyValueGetterCache.cs" />
-    <Compile Include="StaticReflectionHelper.cs" />
-    <Compile Include="StaticReflectionHelperProvider.cs" />
-    <Compile Include="StaticReflectionHelper{T}.cs" />
-    <Compile Include="TypeInfo.cs" />
-    <Compile Include="TypeInfoProvider.cs" />
+    <Compile Include="PropertyInfo{T,TProperty}.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
@@ -172,6 +184,10 @@
     <None Include="..\MorseCode.snk">
       <Link>MorseCode.snk</Link>
     </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="_Root.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

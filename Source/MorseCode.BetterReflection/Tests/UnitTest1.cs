@@ -2,12 +2,12 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="UnitTest1.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -53,27 +53,80 @@ namespace MorseCode.BetterReflection.Tests
     {
         #region Fields
 
-        private readonly Dictionary<string, CallSite<Func<CallSite, object, object>>> callSiteByPropertyName =
-            new Dictionary<string, CallSite<Func<CallSite, object, object>>>();
+        private readonly Dictionary<string, CallSite<Func<CallSite, object, object>>> callSiteByPropertyName = new Dictionary<string, CallSite<Func<CallSite, object, object>>>();
 
-        private readonly Dictionary<string, Func<object, object>> delegatesByPropertyName =
-            new Dictionary<string, Func<object, object>>();
+        private readonly Dictionary<string, Func<object, object>> delegatesByPropertyName = new Dictionary<string, Func<object, object>>();
 
-        private readonly ConcurrentDictionary<string, Func<object, object>> delegatesByPropertyName2 =
-            new ConcurrentDictionary<string, Func<object, object>>();
+        private readonly ConcurrentDictionary<string, Func<object, object>> delegatesByPropertyName2 = new ConcurrentDictionary<string, Func<object, object>>();
 
-        private readonly Dictionary<string, MemberGetter> fasterflectDelegatesByPropertyName =
-            new Dictionary<string, MemberGetter>();
+        private readonly Dictionary<string, MemberGetter> fasterflectDelegatesByPropertyName = new Dictionary<string, MemberGetter>();
 
-        private readonly ConcurrentDictionary<string, MemberGetter> fasterflectDelegatesByPropertyName2 =
-            new ConcurrentDictionary<string, MemberGetter>();
+        private readonly ConcurrentDictionary<string, MemberGetter> fasterflectDelegatesByPropertyName2 = new ConcurrentDictionary<string, MemberGetter>();
 
         #endregion
 
         #region Public Methods and Operators
 
         [TestMethod]
-        public void TestMethod1()
+        public void GenericTypeInfoEquality()
+        {
+            Type t1 = typeof(TestGeneric<>);
+            Type t2 = typeof(TestGeneric<>);
+            Type t3 = typeof(TestGeneric<int>);
+            Type t4 = typeof(TestGeneric<int>);
+            Type t5 = typeof(TestGeneric<double>);
+            Assert.AreEqual(t1, t2);
+            Assert.AreNotEqual(t2, t3);
+            Assert.AreEqual(t3, t4);
+            Assert.AreNotEqual(t4, t5);
+        }
+
+        [TestMethod]
+        public void PropertyInfoEquality()
+        {
+            PropertyInfo p1 = typeof(Hey).GetProperty("TestInt");
+            PropertyInfo p2 = typeof(Hey).GetProperty("TestInt");
+            PropertyInfo p3 = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt).PropertyInfo;
+            Assert.AreEqual(p1, p2);
+            Assert.AreEqual(p1, p3);
+        }
+
+        [TestMethod]
+        public void TestMethods()
+        {
+            IVoidMethodInfo<Hey> m1 = TypeInfoFactory.GetTypeInfo<Hey>().GetVoidMethod(o => o.Clear);
+            IVoidMethodInfo<Hey, int> m2 = TypeInfoFactory.GetTypeInfo<Hey>().GetVoidMethod(o => (Action<int>)o.Set);
+            IVoidMethodInfo<Hey, int, int> m3 = TypeInfoFactory.GetTypeInfo<Hey>().GetVoidMethod(o => (Action<int, int>)o.Set);
+            IVoidMethodInfo<Hey, int, DateTime> m4 = TypeInfoFactory.GetTypeInfo<Hey>().GetVoidMethod(o => (Action<int, DateTime>)o.Set);
+            IVoidMethodInfo<Hey, int, DateTime> m5 = TypeInfoFactory.GetTypeInfo<Hey>().GetVoidMethod(o => (Action<int, DateTime>)o.SetWithSubtract);
+            IMethodInfo<Hey, int> m6 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<int>)o.GetAsInteger);
+            IMethodInfo<Hey, string> m7 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<string>)o.Get);
+            IMethodInfo<Hey, string, string> m8 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<string, string>)o.Get);
+            IMethodInfo<Hey, string, string, string> m9 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<string, string, string>)o.Get);
+            IMethodInfo<Hey, string, DateTime, string> m10 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<string, DateTime, string>)o.Get);
+            IMethodInfo<Hey, string, DateTime, string> m11 = TypeInfoFactory.GetTypeInfo<Hey>().GetMethod(o => (Func<string, DateTime, string>)o.GetWithLongFormat);
+
+            Hey hey = new Hey();
+            m2.Invoke(hey, 5);
+            Assert.AreEqual(5, hey.TestInt);
+            m1.Invoke(hey);
+            Assert.AreEqual(0, hey.TestInt);
+            m3.Invoke(hey, 3, 4);
+            Assert.AreEqual(7, hey.TestInt);
+            m4.Invoke(hey, 3, new DateTime(2015, 1, 1));
+            Assert.AreEqual(2018, hey.TestInt);
+            m5.Invoke(hey, 3, new DateTime(2015, 1, 1));
+            Assert.AreEqual(-2012, hey.TestInt);
+            Assert.AreEqual(-2012, m6.Invoke(hey));
+            Assert.AreEqual("-2012", m7.Invoke(hey));
+            Assert.AreEqual("a-2012", m8.Invoke(hey, "a"));
+            Assert.AreEqual("a-2012b", m9.Invoke(hey, "a", "b"));
+            Assert.AreEqual("a-201215", m10.Invoke(hey, "a", new DateTime(2015, 1, 1)));
+            Assert.AreEqual("a-20122015", m11.Invoke(hey, "a", new DateTime(2015, 1, 1)));
+        }
+
+        [TestMethod]
+        public void TestProperties()
         {
             Hey hey = new Hey();
             hey.TestInt = 5;
@@ -99,12 +152,12 @@ namespace MorseCode.BetterReflection.Tests
             int v9b = this.FasterflectWithCaching(hey, "TestInt2");
             int v10a = this.FasterflectWithCaching2(hey, "TestInt");
             int v10b = this.FasterflectWithCaching2(hey, "TestInt2");
-            int v11a = this.BetterReflection(hey, o => o.TestInt);
-            int v11b = this.BetterReflection(hey, o => o.TestInt2);
+            int v12a = this.BetterReflection(hey, o => o.TestInt);
+            int v12b = this.BetterReflection(hey, o => o.TestInt2);
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.CustomDynamic3(hey, "TestInt");
                 this.CustomDynamic3(hey, "TestInt2");
@@ -115,7 +168,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.CustomDynamic4(hey, "TestInt");
                 this.CustomDynamic4(hey, "TestInt2");
@@ -126,7 +179,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.Dynamic(hey);
                 this.Dynamic2(hey);
@@ -137,7 +190,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.CustomDynamic(hey, "TestInt");
                 this.CustomDynamic(hey, "TestInt2");
@@ -148,7 +201,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             //sw.Start();
-            //for (int i = 0; i < 5000000; i++)
+            //for (int i = 0; i < 5000; i++)
             //{
             //    this.CustomDynamic2(hey, "TestInt");
             //    this.CustomDynamic2(hey, "TestInt2");
@@ -158,7 +211,7 @@ namespace MorseCode.BetterReflection.Tests
             //long ms3 = sw.ElapsedMilliseconds;
             //sw.Reset();
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.Reflection(hey, "TestInt");
                 this.Reflection(hey, "TestInt2");
@@ -169,7 +222,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 int testInt = hey.TestInt;
                 int testInt2 = hey.TestInt2;
@@ -180,7 +233,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.Fasterflect(hey, "TestInt");
                 this.Fasterflect(hey, "TestInt2");
@@ -191,7 +244,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.FasterflectWithCaching(hey, "TestInt");
                 this.FasterflectWithCaching(hey, "TestInt2");
@@ -202,7 +255,7 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 5000; i++)
             {
                 this.FasterflectWithCaching2(hey, "TestInt");
                 this.FasterflectWithCaching2(hey, "TestInt2");
@@ -213,14 +266,51 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            for (int i = 0; i < 5000000; i++)
+            for (int i = 0; i < 50000; i++)
             {
                 this.BetterReflection(hey, o => o.TestInt);
                 this.BetterReflection(hey, o => o.TestInt2);
             }
             sw.Stop();
 
-            long ms11 = sw.ElapsedMilliseconds;
+            long ms11a = sw.ElapsedMilliseconds;
+            sw.Reset();
+
+            sw.Start();
+            IPropertyInfo<Hey, int> propertyInfo1a = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt);
+            IPropertyInfo<Hey, int> propertyInfo2a = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt2);
+            for (int i = 0; i < 500000; i++)
+            {
+                this.BetterReflectionWithCaching(hey, propertyInfo1a);
+                this.BetterReflectionWithCaching(hey, propertyInfo2a);
+            }
+            sw.Stop();
+
+            long ms12a = sw.ElapsedMilliseconds;
+            sw.Reset();
+
+            sw.Start();
+            PropertyInfo pi1 = typeof(Hey).GetProperty("TestInt");
+            PropertyInfo pi2 = typeof(Hey).GetProperty("TestInt2");
+            for (int i = 0; i < 500000; i++)
+            {
+                int value1 = (int)pi1.GetValue(hey);
+                int value2 = (int)pi2.GetValue(hey);
+            }
+            sw.Stop();
+
+            long ms13 = sw.ElapsedMilliseconds;
+            sw.Reset();
+
+            sw.Start();
+            for (int i = 0; i < 500000; i++)
+            {
+                int value1 = (int)typeof(Hey).GetProperty("TestInt").GetValue(hey);
+                int value2 = (int)typeof(Hey).GetProperty("TestInt2").GetValue(hey);
+            }
+            sw.Stop();
+
+            long ms14 = sw.ElapsedMilliseconds;
         }
 
         #endregion
@@ -235,9 +325,13 @@ namespace MorseCode.BetterReflection.Tests
 
         private TProperty BetterReflection<TProperty>(Hey o, Expression<Func<Hey, TProperty>> propertyExpression)
         {
-            IPropertyInfo<Hey, TProperty> p =
-                BetterReflectionManager.TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(propertyExpression);
+            IPropertyInfo<Hey, TProperty> p = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(propertyExpression);
             return p.GetValue(o);
+        }
+
+        private TProperty BetterReflectionWithCaching<TProperty>(Hey o, IPropertyInfo<Hey, TProperty> propertyInfo)
+        {
+            return propertyInfo.GetValue(o);
         }
 
         private int CustomDynamic(object o, string propertyName)
@@ -245,13 +339,7 @@ namespace MorseCode.BetterReflection.Tests
             CallSite<Func<CallSite, object, object>> callSite;
             if (!this.callSiteByPropertyName.TryGetValue(propertyName, out callSite))
             {
-                callSite =
-                    CallSite<Func<CallSite, object, object>>.Create(
-                        Binder.GetMember(
-                            CSharpBinderFlags.None,
-                            propertyName,
-                            typeof(UnitTest1),
-                            new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) }));
+                callSite = CallSite<Func<CallSite, object, object>>.Create(Binder.GetMember(CSharpBinderFlags.None, propertyName, typeof(UnitTest1), new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) }));
                 this.callSiteByPropertyName.Add(propertyName, callSite);
             }
             return (int)callSite.Target(callSite, o);
@@ -259,13 +347,7 @@ namespace MorseCode.BetterReflection.Tests
 
         private int CustomDynamic2(object o, string propertyName)
         {
-            CallSite<Func<CallSite, object, object>> callSite =
-                CallSite<Func<CallSite, object, object>>.Create(
-                    Binder.GetMember(
-                        CSharpBinderFlags.None,
-                        propertyName,
-                        typeof(UnitTest1),
-                        new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) }));
+            CallSite<Func<CallSite, object, object>> callSite = CallSite<Func<CallSite, object, object>>.Create(Binder.GetMember(CSharpBinderFlags.None, propertyName, typeof(UnitTest1), new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) }));
             return (int)callSite.Target(callSite, o);
         }
 
@@ -275,29 +357,22 @@ namespace MorseCode.BetterReflection.Tests
             if (!this.delegatesByPropertyName.TryGetValue(propertyName, out d))
             {
                 MethodInfo m = o.GetType().GetProperty(propertyName).GetGetMethod();
-                MethodInfo getDelegateMethod =
-                    typeof(UnitTest1).GetMethod("GetDelegate", BindingFlags.Static | BindingFlags.NonPublic)
-                                     .MakeGenericMethod(o.GetType(), m.ReturnType);
+                MethodInfo getDelegateMethod = typeof(UnitTest1).GetMethod("GetDelegate", BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(o.GetType(), m.ReturnType);
                 d = (Func<object, object>)getDelegateMethod.Invoke(null, new object[] { m });
                 this.delegatesByPropertyName.Add(propertyName, d);
             }
             return (int)d(o);
         }
 
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines",
-            Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed. Suppression is OK here.")]
         private int CustomDynamic4(object o, string propertyName)
         {
-            Func<object, object> d = this.delegatesByPropertyName2.GetOrAdd(
-                propertyName,
-                (Func<string, Func<object, object>>)(n =>
-                    {
-                        MethodInfo m = o.GetType().GetProperty(propertyName).GetGetMethod();
-                        MethodInfo getDelegateMethod =
-                            typeof(UnitTest1).GetMethod("GetDelegate", BindingFlags.Static | BindingFlags.NonPublic)
-                                             .MakeGenericMethod(o.GetType(), m.ReturnType);
-                        return (Func<object, object>)getDelegateMethod.Invoke(null, new object[] { m });
-                    }));
+            Func<object, object> d = this.delegatesByPropertyName2.GetOrAdd(propertyName, (Func<string, Func<object, object>>)(n =>
+                {
+                    MethodInfo m = o.GetType().GetProperty(propertyName).GetGetMethod();
+                    MethodInfo getDelegateMethod = typeof(UnitTest1).GetMethod("GetDelegate", BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(o.GetType(), m.ReturnType);
+                    return (Func<object, object>)getDelegateMethod.Invoke(null, new object[] { m });
+                }));
             return (int)d(o);
         }
 
@@ -319,8 +394,7 @@ namespace MorseCode.BetterReflection.Tests
             return (int)p.DelegateForGetPropertyValue()(o);
         }
 
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines",
-            Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed. Suppression is OK here.")]
         private int FasterflectWithCaching(object o, string propertyName)
         {
             MemberGetter d;
@@ -333,17 +407,14 @@ namespace MorseCode.BetterReflection.Tests
             return (int)d(o);
         }
 
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines",
-            Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed. Suppression is OK here.")]
         private int FasterflectWithCaching2(object o, string propertyName)
         {
-            MemberGetter d = this.fasterflectDelegatesByPropertyName2.GetOrAdd(
-                propertyName,
-                (Func<string, MemberGetter>)(n =>
-                    {
-                        PropertyInfo p = typeof(Hey).GetProperty(propertyName);
-                        return p.DelegateForGetPropertyValue();
-                    }));
+            MemberGetter d = this.fasterflectDelegatesByPropertyName2.GetOrAdd(propertyName, (Func<string, MemberGetter>)(n =>
+                {
+                    PropertyInfo p = typeof(Hey).GetProperty(propertyName);
+                    return p.DelegateForGetPropertyValue();
+                }));
             return (int)d(o);
         }
 
@@ -364,6 +435,69 @@ namespace MorseCode.BetterReflection.Tests
             public int TestInt2 { get; set; }
 
             #endregion
+
+            #region Public Methods and Operators
+
+            public void Clear()
+            {
+                this.TestInt = 0;
+            }
+
+            public int GetAsInteger()
+            {
+                return this.TestInt;
+            }
+
+            public string Get()
+            {
+                return this.TestInt.ToString();
+            }
+
+            public string Get(string prefix)
+            {
+                return prefix + this.TestInt.ToString();
+            }
+
+            public string Get(string prefix, string suffix)
+            {
+                return this.Get(prefix) + suffix;
+            }
+
+            public string Get(string prefix, DateTime d)
+            {
+                return this.Get(prefix) + d.Year.ToString().Substring(2);
+            }
+
+            public string GetWithLongFormat(string prefix, DateTime d)
+            {
+                return this.Get(prefix) + d.Year;
+            }
+
+            public void Set(int v)
+            {
+                this.TestInt = v;
+            }
+
+            public void Set(int v, int v2)
+            {
+                this.TestInt = v + v2;
+            }
+
+            public void Set(int v, DateTime d)
+            {
+                this.TestInt = v + d.Year;
+            }
+
+            public void SetWithSubtract(int v, DateTime d)
+            {
+                this.TestInt = v - d.Year;
+            }
+
+            #endregion
+        }
+
+        public class TestGeneric<T>
+        {
         }
     }
 }

@@ -2,12 +2,12 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ITypeInfo.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,8 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
-    using System.Reflection;
 
-    public interface ITypeInfo<T>
+    public interface ITypeInfo
     {
         #region Public Properties
 
@@ -47,15 +45,13 @@ namespace MorseCode.BetterReflection
 
         #region Public Methods and Operators
 
-        IEnumerable<IPropertyInfo<T>> GetProperties();
+        IEnumerable<IPropertyInfo> GetProperties();
 
-        IEnumerable<IPropertyInfo<T>> GetProperties(BindingFlags bindingFlags);
+        IPropertyInfo GetProperty(string name);
 
-        IPropertyInfo<T> GetProperty(string name);
+        IEnumerable<IMethodInfo> GetMethods();
 
-        IPropertyInfo<T> GetProperty(string name, BindingFlags bindingFlags);
-
-        IPropertyInfo<T, TProperty> GetProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression);
+        IMethodInfo GetMethod(string name);
 
         #endregion
     }

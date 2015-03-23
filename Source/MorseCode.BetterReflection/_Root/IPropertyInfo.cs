@@ -35,20 +35,16 @@ namespace MorseCode.BetterReflection
     using System;
     using System.Reflection;
 
-    public interface IPropertyInfo<in T> : IPropertyInfoWithGetValue<T>, IPropertyInfoWithSetValue<T>
+    public interface IPropertyInfo : IPropertyInfoWithGetValue, IPropertyInfoWithSetValue
     {
         #region Public Properties
 
         new PropertyInfo PropertyInfo { get; }
 
+        Type ObjectType { get; }
+
         Type PropertyType { get; }
 
         #endregion
-    }
-
-    public interface IPropertyInfo<in T, TValue> : IPropertyInfo<T>,
-                                                   IPropertyInfoWithGetValue<T, TValue>,
-                                                   IPropertyInfoWithSetValue<T, TValue>
-    {
     }
 }

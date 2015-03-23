@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IStaticReflectionHelperProvider.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IMethodInfo{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,8 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IStaticReflectionHelperProvider
+    public interface IMethodInfo<in T> : IMethodInfo
     {
-        #region Public Methods and Operators
-
-        IStaticReflectionHelper<T> GetStaticReflectionHelper<T>();
-
-        #endregion
+        object InvokePartiallyUntyped(T o, params object[] parameters);
     }
 }

@@ -34,15 +34,10 @@ namespace MorseCode.BetterReflection
 {
     using System.Reflection;
 
-    public interface IPropertyInfoWithSetValue<in T>
+    public interface IPropertyInfoWithSetValue
     {
         PropertyInfo PropertyInfo { get; }
 
-        void SetValue(T o, object value);
-    }
-
-    public interface IPropertyInfoWithSetValue<in T, in TValue>
-    {
-        void SetValue(T o, TValue value);
+        void SetValueFullyUntyped(object o, object value);
     }
 }

@@ -74,18 +74,11 @@ namespace ConsoleApplication1
         private static readonly ConcurrentDictionary<string, MemberGetter> FasterflectDelegatesByPropertyName2 =
             new ConcurrentDictionary<string, MemberGetter>();
 
-        private static readonly IPropertyValueGetterCache PropertyValueGetterCache =
-            new PropertyValueGetterCache(
-                new StaticReflectionHelper<PropertyValueGetterCache>(new StaticReflectionHelper()));
-
-        private static readonly IStaticReflectionHelper<Hey> StaticReflectionHelper =
-            new StaticReflectionHelper<Hey>(new StaticReflectionHelper());
-
         private static readonly IPropertyInfo<Hey, int> TestIntPropertyInfo =
-            BetterReflectionManager.TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt);
+            TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt);
 
         private static readonly IPropertyInfo<Hey, int> TestIntPropertyInfo2 =
-            BetterReflectionManager.TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt2);
+            TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt2);
 
         #endregion
 
@@ -93,6 +86,9 @@ namespace ConsoleApplication1
 
         public static void TestMethod1()
         {
+            Console.WriteLine("Press any key to begin.");
+            Console.ReadKey();
+
             Hey hey = new Hey();
             hey.TestInt = 5;
             hey.TestInt2 = 35;
@@ -121,8 +117,6 @@ namespace ConsoleApplication1
             int v11b = BetterReflection(hey, o => o.TestInt2);
             int v12a = BetterReflection2a(hey);
             int v12b = BetterReflection2b(hey);
-            int v13a = BetterReflection3(hey, "TestInt");
-            int v13b = BetterReflection3(hey, "TestInt2");
             int v14a = ReflectionWithExpressions(hey, o => o.TestInt);
             int v14b = ReflectionWithExpressions(hey, o => o.TestInt2);
 
@@ -264,17 +258,6 @@ namespace ConsoleApplication1
             sw.Start();
             for (int i = 0; i < Iterations; i++)
             {
-                BetterReflection3(hey, "TestInt");
-                BetterReflection3(hey, "TestInt2");
-            }
-            sw.Stop();
-
-            long ms13 = sw.ElapsedMilliseconds;
-            sw.Reset();
-
-            sw.Start();
-            for (int i = 0; i < Iterations; i++)
-            {
                 ReflectionWithExpressions(hey, e1);
                 ReflectionWithExpressions(hey, e2);
             }
@@ -306,8 +289,6 @@ namespace ConsoleApplication1
             Console.WriteLine(v11b);
             Console.WriteLine(v12a);
             Console.WriteLine(v12b);
-            Console.WriteLine(v13a);
-            Console.WriteLine(v13b);
             Console.WriteLine(v14a);
             Console.WriteLine(v14b);
 
@@ -315,7 +296,6 @@ namespace ConsoleApplication1
 
             Console.WriteLine("DLR: " + ms1);
             Console.WriteLine("Custom DLR: " + ms2);
-            //Console.WriteLine(ms3);
             Console.WriteLine("Concurrent Delegate caching: " + ms4);
             Console.WriteLine("Reflection: " + ms5);
             Console.WriteLine("Delegate caching: " + ms6);
@@ -325,7 +305,6 @@ namespace ConsoleApplication1
             Console.WriteLine("Fasterflect with Concurrent Caching: " + ms10);
             Console.WriteLine("Better Reflection: " + ms11);
             Console.WriteLine("Better Reflection with Caching: " + ms12);
-            Console.WriteLine("Better Reflection with Property Name: " + ms13);
             Console.WriteLine("Reflection with Expressions: " + ms14);
 
             Console.ReadKey();
@@ -337,7 +316,7 @@ namespace ConsoleApplication1
 
         private static TProperty BetterReflection<TProperty>(Hey o, Expression<Func<Hey, TProperty>> propertyExpression)
         {
-            return BetterReflectionManager.TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(propertyExpression).GetValue(o);
+            return TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(propertyExpression).GetValue(o);
         }
 
         private static int BetterReflection2a(Hey o)
@@ -348,12 +327,6 @@ namespace ConsoleApplication1
         private static int BetterReflection2b(Hey o)
         {
             return TestIntPropertyInfo2.GetValue(o);
-        }
-
-        private static int BetterReflection3(Hey o, string propertyName)
-        {
-            PropertyInfo propertyInfo = typeof(Hey).GetProperty(propertyName);
-            return PropertyValueGetterCache.GetValue<Hey, int>(propertyInfo, o);
         }
 
         private static int CustomDynamic(object o, string propertyName)
@@ -483,7 +456,7 @@ namespace ConsoleApplication1
         private static TProperty ReflectionWithExpressions<TProperty>(
             Hey o, Expression<Func<Hey, TProperty>> propertyExpression)
         {
-            PropertyInfo p = typeof(Hey).GetProperty(StaticReflectionHelper.GetMemberInfo(propertyExpression).Name);
+            PropertyInfo p = typeof(Hey).GetProperty(StaticReflection<Hey>.GetMemberInfo(propertyExpression).Name);
             return (TProperty)p.GetValue(o);
         }
 

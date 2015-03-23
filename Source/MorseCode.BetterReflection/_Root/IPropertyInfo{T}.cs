@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyValueSetterCache.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="IPropertyInfo{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,7 @@
 
 namespace MorseCode.BetterReflection
 {
-    using System.Reflection;
-
-    public interface IPropertyValueSetterCache
+    public interface IPropertyInfo<in T> : IPropertyInfo, IPropertyInfoWithGetValue<T>, IPropertyInfoWithSetValue<T>
     {
-        void SetValue<T, TProperty>(PropertyInfo propertyInfo, T o, TProperty value);
     }
 }
