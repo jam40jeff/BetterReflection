@@ -126,11 +126,13 @@
     <AssemblyOriginatorKeyFile>..\MorseCode.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MorseCode.FrameworkExtensions">
-      <HintPath>..\packages\MorseCode.FrameworkExtensions.1.0.20.0\lib\net45\MorseCode.FrameworkExtensions.dll</HintPath>
+    <Reference Include="MorseCode.FrameworkExtensions, Version=1.0.23.0, Culture=neutral, PublicKeyToken=214321fcab92c5da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MorseCode.FrameworkExtensions.1.0.23.0\lib\net45\MorseCode.FrameworkExtensions.dll</HintPath>
     </Reference>
-    <Reference Include="MorseCode.ITask">
-      <HintPath>..\packages\MorseCode.ITask.1.0.24.0\lib\net45\MorseCode.ITask.dll</HintPath>
+    <Reference Include="MorseCode.ITask, Version=1.0.27.0, Culture=neutral, PublicKeyToken=214321fcab92c5da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MorseCode.ITask.1.0.27.0\lib\net45\MorseCode.ITask.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -184,6 +186,7 @@
     <None Include="..\MorseCode.snk">
       <Link>MorseCode.snk</Link>
     </None>
+    <None Include="app.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
