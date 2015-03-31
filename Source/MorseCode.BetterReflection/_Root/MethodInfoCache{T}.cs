@@ -59,55 +59,55 @@ namespace MorseCode.BetterReflection
             CreateMethodInfoGenericMethodDefinitions = new MethodInfo[9];
             CreateVoidMethodInfoGenericMethodDefinitions = new MethodInfo[8];
 
-            MethodInfo createMethodInfoMethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object>(null));
+            MethodInfo createMethodInfoMethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object>(null));
             CreateMethodInfoGenericMethodDefinitions[0] = createMethodInfoMethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object>(null));
+            MethodInfo createMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[1] = createMethodInfo1MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object>(null));
+            MethodInfo createMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[2] = createMethodInfo2MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object>(null));
+            MethodInfo createMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[3] = createMethodInfo3MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object>(null));
+            MethodInfo createMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[4] = createMethodInfo4MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object>(null));
+            MethodInfo createMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[5] = createMethodInfo5MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object>(null));
+            MethodInfo createMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[6] = createMethodInfo6MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object>(null));
+            MethodInfo createMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[7] = createMethodInfo7MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object, object>(null));
+            MethodInfo createMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[8] = createMethodInfo8MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object>(null));
+            MethodInfo createVoidMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[0] = createVoidMethodInfo1MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object>(null));
+            MethodInfo createVoidMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[1] = createVoidMethodInfo2MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object>(null));
+            MethodInfo createVoidMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[2] = createVoidMethodInfo3MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object>(null));
+            MethodInfo createVoidMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[3] = createVoidMethodInfo4MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object>(null));
+            MethodInfo createVoidMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[4] = createVoidMethodInfo5MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object>(null));
+            MethodInfo createVoidMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[5] = createVoidMethodInfo6MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object>(null));
+            MethodInfo createVoidMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[6] = createVoidMethodInfo7MethodInfo.GetGenericMethodDefinition();
 
-            MethodInfo createVoidMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object, object>(null));
+            MethodInfo createVoidMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object, object>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[7] = createVoidMethodInfo8MethodInfo.GetGenericMethodDefinition();
         }
 

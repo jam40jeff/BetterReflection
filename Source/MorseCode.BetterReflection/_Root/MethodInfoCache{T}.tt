@@ -66,12 +66,12 @@ namespace MorseCode.BetterReflection
             CreateVoidMethodInfoGenericMethodDefinitions = new MethodInfo[<#= MaximumNumberOfParameters #>];
 <# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
 
-            MethodInfo createMethodInfo<# if(n > 0) { #><#= n #><# } #>MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "object")) #>>(null));
+            MethodInfo createMethodInfo<# if(n > 0) { #><#= n #><# } #>MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "object")) #>>(null));
             CreateMethodInfoGenericMethodDefinitions[<#= n #>] = createMethodInfo<# if(n > 0) { #><#= n #><# } #>MethodInfo.GetGenericMethodDefinition();
 <# }); #>
 <# Enumerable.Range(1, MaximumNumberOfParameters).ToList().ForEach(n => { #>
 
-            MethodInfo createVoidMethodInfo<#= n #>MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "object")) #>>(null));
+            MethodInfo createVoidMethodInfo<#= n #>MethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreateVoidMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "object")) #>>(null));
             CreateVoidMethodInfoGenericMethodDefinitions[<#= n - 1 #>] = createVoidMethodInfo<#= n #>MethodInfo.GetGenericMethodDefinition();
 <# }); #>
         }
