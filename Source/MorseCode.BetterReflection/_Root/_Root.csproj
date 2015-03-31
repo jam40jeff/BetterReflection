@@ -143,39 +143,248 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TReturn}.cs" />
-    <Compile Include="MethodInfo{T,TParameter1,TReturn}.cs" />
-    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2}.cs" />
-    <Compile Include="VoidMethodInfo{T,TParameter1}.cs" />
-    <Compile Include="VoidMethodInfo{T}.cs" />
-    <Compile Include="MethodInfo{T,TReturn}.cs" />
-    <Compile Include="MethodInfoCache{T}.cs" />
-    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TReturn}.cs" />
-    <Compile Include="IMethodInfo{T,TParameter1,TReturn}.cs" />
-    <Compile Include="IMethodInfo{T,TReturn}.cs" />
-    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2}.cs" />
-    <Compile Include="IVoidMethodInfo{T,TParameter1}.cs" />
+    <Compile Include="WritablePropertyInfoInterfaceContract{T,TProperty}.cs" />
+    <Compile Include="ReadablePropertyInfoInterfaceContract{T,TProperty}.cs" />
+    <Compile Include="ReadWritePropertyInfoInterfaceContract{T,TProperty}.cs" />
+    <Compile Include="ReadWritePropertyInfoInterfaceContract{T}.cs" />
+    <Compile Include="WritablePropertyInfoInterfaceContract{T}.cs" />
+    <Compile Include="ReadablePropertyInfoInterfaceContract{T}.cs" />
+    <Compile Include="ReadWritePropertyInfoInterfaceContract.cs" />
+    <Compile Include="WritablePropertyInfoInterfaceContract.cs" />
+    <Compile Include="ReadablePropertyInfoInterfaceContract.cs" />
+    <Compile Include="PropertyInfoInterfaceContract{T}.cs" />
+    <Compile Include="WriteOnlyPropertyInfo{T,TProperty}.cs" />
+    <Compile Include="ReadOnlyPropertyInfo{T,TProperty}.cs" />
+    <Compile Include="IReadWritePropertyInfo{T,TProperty}.cs" />
+    <Compile Include="IReadWritePropertyInfo.cs" />
+    <Compile Include="IReadWritePropertyInfo{T}.cs" />
+    <Compile Include="PropertyInfoInterfaceContract.cs" />
+    <Compile Include="ITypeInfo{T}.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ITypeInfo{T}.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoCache{T}.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodInfoCache{T}.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TParameter3,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TParameter2,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TParameter1,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfo{T,TReturn}.cs">
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TypeInfo{T}.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TypeInfo{T}.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TParameter3,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TParameter2,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TParameter1,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfo{T,TReturn}.cs">
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfoTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IMethodInfoTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2,TParameter3}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1,TParameter2}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T,TParameter1}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IVoidMethodInfo{T}.cs">
+      <DependentUpon>IVoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TParameter2,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TParameter1,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T,TReturn}.cs">
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContractTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContractTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodInfoInterfaceContract{T}.cs" />
+    <Compile Include="MethodInfoInterfaceContract.cs" />
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3,TParameter4}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2,TParameter3}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1,TParameter2}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T,TParameter1}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfoInterfaceContract{T}.cs">
+      <DependentUpon>VoidMethodInfoInterfaceContractTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="IMethodInfo{T}.cs" />
     <Compile Include="IMethodInfo.cs" />
-    <Compile Include="IPropertyInfoWithGetValue{T,TProperty}.cs" />
-    <Compile Include="IPropertyInfoWithGetValue.cs" />
-    <Compile Include="IPropertyInfo{T,TProperty}.cs" />
-    <Compile Include="IPropertyInfoWithSetValue{T,TProperty}.cs" />
-    <Compile Include="IPropertyInfoWithSetValue{T}.cs" />
+    <Compile Include="IReadablePropertyInfo{T,TProperty}.cs" />
+    <Compile Include="IReadablePropertyInfo.cs" />
+    <Compile Include="IWritablePropertyInfo{T,TProperty}.cs" />
+    <Compile Include="IWritablePropertyInfo{T}.cs" />
     <Compile Include="IPropertyInfo.cs" />
     <Compile Include="ITypeInfo.cs" />
-    <Compile Include="IVoidMethodInfo{T}.cs" />
     <Compile Include="StaticReflection.cs" />
     <Compile Include="StaticReflection{T}.cs" />
     <Compile Include="PropertyInfoCache{T}.cs" />
-    <Compile Include="TypeInfo{T}.cs" />
-    <Compile Include="ITypeInfo{T}.cs" />
     <Compile Include="TypeInfoFactory.cs" />
     <Compile Include="IPropertyInfo{T}.cs" />
-    <Compile Include="IPropertyInfoWithGetValue{T}.cs" />
-    <Compile Include="IPropertyInfoWithSetValue.cs" />
+    <Compile Include="IReadablePropertyInfo{T}.cs" />
+    <Compile Include="IWritablePropertyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfo{T,TProperty}.cs" />
+    <Compile Include="ReadWritePropertyInfo{T,TProperty}.cs" />
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7,TParameter8}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6,TParameter7}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5,TParameter6}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1,TParameter2}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T,TParameter1}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="VoidMethodInfo{T}.cs">
+      <DependentUpon>VoidMethodInfoTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
@@ -187,10 +396,53 @@
       <Link>MorseCode.snk</Link>
     </None>
     <None Include="app.config" />
+    <None Include="ITypeInfo{T}.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ITypeInfo{T}.cs</LastGenOutput>
+    </None>
+    <None Include="MethodInfoCache{T}.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodInfoCache{T}.cs</LastGenOutput>
+    </None>
+    <None Include="TypeInfo{T}.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TypeInfo{T}.cs</LastGenOutput>
+    </None>
+    <None Include="VoidMethodInfoTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VoidMethodInfoTemplate.cs</LastGenOutput>
+    </None>
+    <None Include="MethodInfoTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodInfoTemplate.cs</LastGenOutput>
+    </None>
+    <None Include="IVoidMethodInfoTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IVoidMethodInfoTemplate.cs</LastGenOutput>
+    </None>
+    <None Include="IMethodInfoTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IMethodInfoTemplate.cs</LastGenOutput>
+    </None>
+    <None Include="Utilities.ttinclude" />
+    <None Include="VoidMethodInfoInterfaceContractTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VoidMethodInfoInterfaceContractTemplate.cs</LastGenOutput>
+    </None>
+    <None Include="MethodInfoInterfaceContractTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodInfoInterfaceContractTemplate.cs</LastGenOutput>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TemplateFileManager.ttinclude">
+      <LastGenOutput>TemplateFileManager1.cs</LastGenOutput>
+    </None>
     <None Include="_Root.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

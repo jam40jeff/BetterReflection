@@ -37,10 +37,26 @@ namespace MorseCode.BetterReflection
     using System.Linq.Expressions;
     using System.Reflection;
 
+    /// <summary>
+    /// Provides methods for statically obtaining reflection info.
+    /// </summary>
     public static class StaticReflection
     {
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Gets member info for an in-scope member, which may be a local variable, parameter, static member, or any instance member
+        /// currently in scope.
+        /// </summary>
+        /// <param name="inScopeMemberExpression">
+        /// The in-scope member expression of the form <c>() => member</c> which returns a member of type <typeparamref name="TMember"/>.
+        /// </param>
+        /// <typeparam name="TMember">
+        /// The type of the member.
+        /// </typeparam>
+        /// <returns>
+        /// The member info for the member.
+        /// </returns>
         public static MemberInfo GetInScopeMemberInfo<TMember>(Expression<Func<TMember>> inScopeMemberExpression)
         {
             Contract.Requires<ArgumentNullException>(inScopeMemberExpression != null, "inScopeMemberExpression");
@@ -49,36 +65,61 @@ namespace MorseCode.BetterReflection
             return GetInScopeMemberInfoInternal(inScopeMemberExpression);
         }
 
-        public static MethodInfo GetInScopeMethodInfo(Expression<Action> inScopeMethodCallExpression)
+        /// <summary>
+        /// Gets method info for an in-scope method, which may be a static method, or any instance method currently in scope.
+        /// </summary>
+        /// <param name="inScopeMethodExpression">
+        /// The in-scope method expression of the form <c>() => (TMethod)method</c> which returns a method convertible to delegate type <typeparamref name="TMethod"/>.
+        /// </param>
+        /// <typeparam name="TMethod">
+        /// The <see cref="Func{TReturn}"/> or <see cref="Action"/> delegate type of the method.
+        /// </typeparam>
+        /// <returns>
+        /// The method info for the method.
+        /// </returns>
+        public static MethodInfo GetInScopeMethodInfo<TMethod>(Expression<Func<TMethod>> inScopeMethodExpression)
         {
-            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
-            Contract.Ensures(Contract.Result<MemberInfo>() != null);
-
-            return GetInScopeMethodInfoInternal(inScopeMethodCallExpression);
-        }
-
-        public static MethodInfo GetInScopeMethodInfo<TReturn>(Expression<Func<TReturn>> inScopeMethodCallExpression)
-        {
-            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
-            Contract.Ensures(Contract.Result<MemberInfo>() != null);
-
-            return GetInScopeMethodInfoInternal(inScopeMethodCallExpression);
-        }
-
-        public static MemberInfo GetMemberInfoFromMemberAccess(LambdaExpression expression)
-        {
-            Contract.Requires<ArgumentNullException>(expression != null, "expression");
-            Contract.Ensures(Contract.Result<MemberInfo>() != null);
-
-            return GetMemberInfoFromMemberAccessInternal(expression);
-        }
-
-        public static MethodInfo GetMethodInfoFromMethodCall(LambdaExpression expression)
-        {
-            Contract.Requires<ArgumentNullException>(expression != null, "expression");
+            Contract.Requires<ArgumentNullException>(inScopeMethodExpression != null, "inScopeMethodExpression");
             Contract.Ensures(Contract.Result<MethodInfo>() != null);
 
-            return GetMethodInfoFromMethodCallInternal(expression);
+            return GetInScopeMethodInfoInternal(inScopeMethodExpression);
+        }
+
+        /// <summary>
+        /// Gets method info for an in-scope method, which may be a static method, or any instance method currently in scope, by calling the method.
+        /// </summary>
+        /// <param name="inScopeMethodCallExpression">
+        /// The in-scope method call expression of the form <c>() =&gt; Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The member info for the member.
+        /// </returns>
+        public static MethodInfo GetInScopeMethodInfoFromMethodCall(Expression<Action> inScopeMethodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
+            Contract.Ensures(Contract.Result<MemberInfo>() != null);
+
+            return GetInScopeMethodInfoFromMethodCallInternal(inScopeMethodCallExpression);
+        }
+
+        /// <summary>
+        /// Gets method info for an in-scope method, which may be a static method, or any instance method currently in scope, by calling the method.
+        /// </summary>
+        /// <typeparam name="TReturn">
+        /// The return type of the method.
+        /// </typeparam>
+        /// <param name="inScopeMethodCallExpression">
+        /// The in-scope method call expression of the form <c>() =&gt; Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The member info for the member.
+        /// </returns>
+        public static MethodInfo GetInScopeMethodInfoFromMethodCall<TReturn>(Expression<Func<TReturn>> inScopeMethodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
+            Contract.Ensures(Contract.Result<MemberInfo>() != null);
+
+            return GetInScopeMethodInfoFromMethodCallInternal(inScopeMethodCallExpression);
         }
 
         #endregion
@@ -90,23 +131,31 @@ namespace MorseCode.BetterReflection
             Contract.Requires(inScopeMemberExpression != null, "inScopeMemberExpression");
             Contract.Ensures(Contract.Result<MemberInfo>() != null);
 
-            return GetMemberInfoFromMemberAccess(inScopeMemberExpression);
+            return GetMemberInfoFromMemberAccessInternal(inScopeMemberExpression);
         }
 
-        internal static MethodInfo GetInScopeMethodInfoInternal(Expression<Action> inScopeMethodCallExpression)
+        internal static MethodInfo GetInScopeMethodInfoInternal<TMember>(Expression<Func<TMember>> inScopeMethodExpression)
+        {
+            Contract.Requires(inScopeMethodExpression != null, "inScopeMethodExpression");
+            Contract.Ensures(Contract.Result<MemberInfo>() != null);
+
+            return GetMethodInfoFromMemberAccessInternal(inScopeMethodExpression);
+        }
+
+        internal static MethodInfo GetInScopeMethodInfoFromMethodCallInternal(Expression<Action> inScopeMethodCallExpression)
         {
             Contract.Requires(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
             Contract.Ensures(Contract.Result<MemberInfo>() != null);
 
-            return GetMethodInfoFromMethodCall(inScopeMethodCallExpression);
+            return GetMethodInfoFromMethodCallInternal(inScopeMethodCallExpression);
         }
 
-        internal static MethodInfo GetInScopeMethodInfoInternal<TReturn>(Expression<Func<TReturn>> inScopeMethodCallExpression)
+        internal static MethodInfo GetInScopeMethodInfoFromMethodCallInternal<TReturn>(Expression<Func<TReturn>> inScopeMethodCallExpression)
         {
             Contract.Requires(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
             Contract.Ensures(Contract.Result<MemberInfo>() != null);
 
-            return GetMethodInfoFromMethodCall(inScopeMethodCallExpression);
+            return GetMethodInfoFromMethodCallInternal(inScopeMethodCallExpression);
         }
 
         internal static MemberInfo GetMemberInfoFromMemberAccessInternal(LambdaExpression expression)
@@ -160,7 +209,11 @@ namespace MorseCode.BetterReflection
                         ConstantExpression methodInfoExpression = (ConstantExpression)currentExpression;
                         if (methodInfoExpression.Type == typeof(MethodInfo))
                         {
-                            return (MethodInfo)methodInfoExpression.Value;
+                            MethodInfo result = (MethodInfo)methodInfoExpression.Value;
+                            if (result != null)
+                            {
+                                return result;
+                            }
                         }
                     }
                 }

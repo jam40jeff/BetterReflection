@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoWithGetValue{T}.cs" company="MorseCode Software">
+// <copyright file="WritablePropertyInfoInterfaceContract.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -32,11 +32,63 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IPropertyInfoWithGetValue<in T> : IPropertyInfoWithGetValue
-    {
-        #region Public Methods and Operators
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Reflection;
 
-        object GetValue(T o);
+    [ContractClassFor(typeof(IWritablePropertyInfo))]
+    internal abstract class WritablePropertyInfoInterfaceContract : IWritablePropertyInfo
+    {
+        #region Explicit Interface Properties
+
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        Type IPropertyInfo.ObjectType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.PropertyType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Explicit Interface Methods
+
+        void IWritablePropertyInfo.SetValueFullyUntyped(object o, object value)
+        {
+            Contract.Requires<ArgumentNullException>(o != null, "o");
+        }
 
         #endregion
     }

@@ -33,12 +33,17 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
 
     using MorseCode.FrameworkExtensions;
 
-    internal class VoidMethodInfo<T> : IVoidMethodInfo<T>
+    [Serializable]
+    internal class VoidMethodInfo<T> : IVoidMethodInfo<T>, ISerializable
     {
         #region Fields
 
@@ -61,6 +66,23 @@ namespace MorseCode.BetterReflection
             this.invoker = new Lazy<Action<T>>(() => DelegateUtility.CreateDelegate<Action<T>>(this.methodInfo));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VoidMethodInfo{T}"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [ContractVerification(false)]
+        // ReSharper disable UnusedParameter.Local
+        protected VoidMethodInfo(SerializationInfo info, StreamingContext context)
+            // ReSharper restore UnusedParameter.Local
+            : this((MethodInfo)info.GetValue("m", typeof(MethodInfo)))
+        {
+        }
+
         #endregion
 
         #region Explicit Interface Properties
@@ -81,7 +103,7 @@ namespace MorseCode.BetterReflection
             }
         }
 
-        Type[] IMethodInfo.ParameterTypes
+        IReadOnlyList<Type> IMethodInfo.ParameterTypes
         {
             get
             {
@@ -99,9 +121,33 @@ namespace MorseCode.BetterReflection
 
         #endregion
 
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Gets the object data to serialize.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("m", this.methodInfo);
+        }
+
+        #endregion
+
         #region Explicit Interface Methods
 
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
+        void IVoidMethodInfo<T>.Invoke(T o)
+        {
+            this.invoker.Value(o);
+        }
+
+        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
         {
             if (!(o is T))
             {
@@ -111,11 +157,17 @@ namespace MorseCode.BetterReflection
             return this.methodInfoInstance.InvokePartiallyUntyped((T)o, parameters);
         }
 
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
+        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
         {
-            if (parameters != null && parameters.Length != 0)
+            return this.methodInfoInstance.InvokeFullyUntyped((T)o, (IEnumerable<object>)parameters);
+        }
+
+        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
+        {
+            List<object> parameterList = (parameters ?? new object[0]).ToList();
+            if (parameterList.Count != 0)
             {
-                throw new ArgumentException("Received parameters of type {" + string.Join(",", parameters.Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
+                throw new ArgumentException("Received parameters of type {" + string.Join(",", (parameters ?? new Type[0]).Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
             }
 
             this.methodInfoInstance.Invoke(o);
@@ -123,13 +175,9 @@ namespace MorseCode.BetterReflection
             return null;
         }
 
-        #endregion
-
-        #region Methods
-
-        void IVoidMethodInfo<T>.Invoke(T o)
+        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
         {
-            this.invoker.Value(o);
+            return this.methodInfoInstance.InvokePartiallyUntyped(o, (IEnumerable<object>)parameters);
         }
 
         #endregion

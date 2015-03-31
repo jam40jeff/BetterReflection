@@ -1,0 +1,163 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ include file="Utilities.ttinclude" #><#@ output extension=".cs" #>
+#region License
+
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MethodInfoCache{T}.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
+// </copyright>
+// <summary>
+// The MIT License (MIT)
+// 
+// Copyright (c) 2015 MorseCode Software
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
+namespace MorseCode.BetterReflection
+{
+    using System;
+    using System.Collections.Concurrent;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+    using System.Reflection;
+
+    internal static class MethodInfoCache<T>
+    {
+        // ReSharper disable StaticFieldInGenericType - refers to a method within this type and should have different values for different generic type parameters
+        #region Static Fields
+
+        private static readonly MethodInfo[] CreateMethodInfoGenericMethodDefinitions;
+
+        private static readonly MethodInfo[] CreateVoidMethodInfoGenericMethodDefinitions;
+
+        // ReSharper restore StaticFieldInGenericType
+        private static readonly ConcurrentDictionary<MethodInfo, IMethodInfo<T>> MethodInfoByMethodInfo = new ConcurrentDictionary<MethodInfo, IMethodInfo<T>>();
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        static MethodInfoCache()
+        {
+            CreateMethodInfoGenericMethodDefinitions = new MethodInfo[<#= MaximumNumberOfParameters + 1 #>];
+            CreateVoidMethodInfoGenericMethodDefinitions = new MethodInfo[<#= MaximumNumberOfParameters #>];
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+            MethodInfo createMethodInfo<# if(n > 0) { #><#= n #><# } #>MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "object")) #>>(null));
+            CreateMethodInfoGenericMethodDefinitions[<#= n #>] = createMethodInfo<# if(n > 0) { #><#= n #><# } #>MethodInfo.GetGenericMethodDefinition();
+<# }); #>
+<# Enumerable.Range(1, MaximumNumberOfParameters).ToList().ForEach(n => { #>
+
+            MethodInfo createVoidMethodInfo<#= n #>MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<<#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "object")) #>>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[<#= n - 1 #>] = createVoidMethodInfo<#= n #>MethodInfo.GetGenericMethodDefinition();
+<# }); #>
+        }
+
+        #endregion
+
+        #region Methods
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+        internal static IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> GetMethodInfo<<#= string.Join(string.Empty, Enumerable.Range(1, n).Select(i => "TParameter" + i + ", ")) #>TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> typedInfo = info as IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+<# }); #>
+
+        internal static IMethodInfo<T> GetMethodInfo(MethodInfo methodInfo)
+        {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T>>() != null);
+
+            IMethodInfo<T> result = MethodInfoByMethodInfo.GetOrAdd(
+                methodInfo,
+                m =>
+                {
+                    ParameterInfo[] parameters = m.GetParameters();
+                    if (m.ReturnType == typeof(void))
+                    {
+                        if (parameters.Length == 0)
+                        {
+                            return CreateVoidMethodInfo(methodInfo);
+                        }
+
+                        if (parameters.Length > CreateVoidMethodInfoGenericMethodDefinitions.Length)
+                        {
+                            throw new InvalidOperationException("Could not create an IVoidMethodInfo with " + parameters.Length + " parameters.");
+                        }
+
+                        return (IMethodInfo<T>)CreateVoidMethodInfoGenericMethodDefinitions[parameters.Length - 1].MakeGenericMethod(parameters.Select(p => p.ParameterType).ToArray()).Invoke(null, new object[] { m });
+                    }
+
+                    if (parameters.Length >= CreateMethodInfoGenericMethodDefinitions.Length)
+                    {
+                        throw new InvalidOperationException("Could not create an IMethodInfo with " + parameters.Length + " parameters.");
+                    }
+
+                    return (IMethodInfo<T>)CreateMethodInfoGenericMethodDefinitions[parameters.Length].MakeGenericMethod(parameters.Select(p => p.ParameterType).Concat(new[] { m.ReturnType }).ToArray()).Invoke(null, new object[] { m });
+                });
+            Contract.Assume(result != null);
+            return result;
+        }
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+        internal static IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> GetVoidMethodInfo<# if(n > 0) { #><<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "TParameter" + i)) #>><# } #>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> typedInfo = info as IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+<# }); #>
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+        private static IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> CreateMethodInfo<<#= string.Join(string.Empty, Enumerable.Range(1, n).Select(i => "TParameter" + i + ", ")) #>TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>(methodInfo);
+        }
+<# }); #>
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+        private static IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> CreateVoidMethodInfo<# if(n > 0) { #><<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "TParameter" + i)) #>><# } #>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>(methodInfo);
+        }
+<# }); #>
+
+        #endregion
+    }
+}

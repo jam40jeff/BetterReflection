@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PropertyInfo{T,TProperty}.cs" company="MorseCode Software">
+// <copyright file="WriteOnlyPropertyInfo{T,TProperty}.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -33,42 +33,72 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
 
     using MorseCode.FrameworkExtensions;
 
-    internal class PropertyInfo<T, TProperty> : IPropertyInfo<T, TProperty>
+    [Serializable]
+    internal class WriteOnlyPropertyInfo<T, TProperty> : IWritablePropertyInfo<T, TProperty>, ISerializable
     {
         #region Fields
 
-        private readonly Lazy<Func<T, TProperty>> getter;
-
         private readonly PropertyInfo propertyInfo;
 
-        private readonly IPropertyInfo<T, TProperty> propertyInfoFullyTyped;
-
-        private readonly IPropertyInfo<T> propertyInfoPartiallyTyped;
-
         private readonly Lazy<Action<T, TProperty>> setter;
+
+        private readonly IWritablePropertyInfo<T, TProperty> writablePropertyInfo;
 
         #endregion
 
         #region Constructors and Destructors
 
-        public PropertyInfo(PropertyInfo propertyInfo)
+        public WriteOnlyPropertyInfo(PropertyInfo propertyInfo)
         {
             this.propertyInfo = propertyInfo;
 
-            this.propertyInfoPartiallyTyped = this;
-            this.propertyInfoFullyTyped = this;
+            this.writablePropertyInfo = this;
 
-            this.getter = new Lazy<Func<T, TProperty>>(() => DelegateUtility.CreateDelegate<Func<T, TProperty>>(this.propertyInfo.GetGetMethod()));
-            this.setter = new Lazy<Action<T, TProperty>>(() => DelegateUtility.CreateDelegate<Action<T, TProperty>>(this.propertyInfo.GetSetMethod()));
+            this.setter = new Lazy<Action<T, TProperty>>(() => DelegateUtility.CreateDelegate<Action<T, TProperty>>(propertyInfo.GetSetMethod()));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WriteOnlyPropertyInfo{T,TProperty}"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [ContractVerification(false)]
+        // ReSharper disable UnusedParameter.Local
+        protected WriteOnlyPropertyInfo(SerializationInfo info, StreamingContext context) // ReSharper restore UnusedParameter.Local
+            : this((PropertyInfo)info.GetValue("p", typeof(PropertyInfo)))
+        {
         }
 
         #endregion
 
         #region Explicit Interface Properties
+
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         Type IPropertyInfo.ObjectType
         {
@@ -86,22 +116,6 @@ namespace MorseCode.BetterReflection
             }
         }
 
-        PropertyInfo IPropertyInfoWithGetValue.PropertyInfo
-        {
-            get
-            {
-                return this.propertyInfo;
-            }
-        }
-
-        PropertyInfo IPropertyInfoWithSetValue.PropertyInfo
-        {
-            get
-            {
-                return this.propertyInfo;
-            }
-        }
-
         Type IPropertyInfo.PropertyType
         {
             get
@@ -112,51 +126,50 @@ namespace MorseCode.BetterReflection
 
         #endregion
 
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Gets the object data to serialize.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("p", this.propertyInfo);
+        }
+
+        #endregion
+
         #region Explicit Interface Methods
 
-        object IPropertyInfoWithGetValue<T>.GetValue(T o)
-        {
-            return this.propertyInfoFullyTyped.GetValue(o);
-        }
-
-        TProperty IPropertyInfoWithGetValue<T, TProperty>.GetValue(T o)
-        {
-            return this.getter.Value(o);
-        }
-
-        object IPropertyInfoWithGetValue.GetValueUntyped(object o)
-        {
-            if (!(o is T))
-            {
-                throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
-            }
-
-            return this.propertyInfoFullyTyped.GetValue((T)o);
-        }
-
-        void IPropertyInfoWithSetValue<T, TProperty>.SetValue(T o, TProperty value)
+        void IWritablePropertyInfo<T, TProperty>.SetValue(T o, TProperty value)
         {
             this.setter.Value(o, value);
         }
 
-        void IPropertyInfoWithSetValue.SetValueFullyUntyped(object o, object value)
+        void IWritablePropertyInfo.SetValueFullyUntyped(object o, object value)
         {
             if (!(o is T))
             {
                 throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
             }
 
-            this.propertyInfoPartiallyTyped.SetValuePartiallyUntyped((T)o, value);
+            this.writablePropertyInfo.SetValuePartiallyUntyped((T)o, value);
         }
 
-        void IPropertyInfoWithSetValue<T>.SetValuePartiallyUntyped(T o, object value)
+        void IWritablePropertyInfo<T>.SetValuePartiallyUntyped(T o, object value)
         {
             if (!(value is TProperty))
             {
                 throw new ArgumentException("Value was of type " + value.GetType().FullName + ", but must be convertible to type " + typeof(TProperty).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => value).Name);
             }
 
-            this.propertyInfoFullyTyped.SetValue(o, (TProperty)value);
+            this.writablePropertyInfo.SetValue(o, (TProperty)value);
         }
 
         #endregion

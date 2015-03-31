@@ -33,20 +33,68 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
+    /// <summary>
+    /// An interface representing method info for an instance method.
+    /// </summary>
+    [ContractClass(typeof(MethodInfoInterfaceContract))]
     public interface IMethodInfo
     {
         #region Public Properties
 
+        /// <summary>
+        /// Gets the underlying Reflection API method info.
+        /// </summary>
         MethodInfo MethodInfo { get; }
 
+        /// <summary>
+        /// Gets the type on which this instance method may be called.
+        /// </summary>
         Type ObjectType { get; }
 
-        Type[] ParameterTypes { get; }
+        /// <summary>
+        /// Gets the parameter types this method accepts.
+        /// </summary>
+        IReadOnlyList<Type> ParameterTypes { get; }
 
+        /// <summary>
+        /// Gets the return type of this method.
+        /// </summary>
         Type ReturnType { get; }
 
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Invokes the method with neither a typed object instance on which to call the method, typed parameters, nor a typed return value.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to call the method.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters to pass to the method.
+        /// </param>
+        /// <returns>
+        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
+        /// </returns>
+        object InvokeFullyUntyped(object o, IEnumerable<object> parameters);
+
+        /// <summary>
+        /// Invokes the method with neither a typed object instance on which to call the method, typed parameters, nor a typed return value.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to call the method.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters to pass to the method.
+        /// </param>
+        /// <returns>
+        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
+        /// </returns>
         object InvokeFullyUntyped(object o, params object[] parameters);
 
         #endregion

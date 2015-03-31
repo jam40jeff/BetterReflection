@@ -33,17 +33,41 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
-    public interface IPropertyInfo : IPropertyInfoWithGetValue, IPropertyInfoWithSetValue
+    /// <summary>
+    /// An interface representing property info for an instance property.
+    /// </summary>
+    [ContractClass(typeof(PropertyInfoInterfaceContract))]
+    public interface IPropertyInfo
     {
         #region Public Properties
 
-        new PropertyInfo PropertyInfo { get; }
+        /// <summary>
+        /// Gets the underlying Reflection API property info.
+        /// </summary>
+        PropertyInfo PropertyInfo { get; }
 
+        /// <summary>
+        /// Gets the type on which this instance property may be used.
+        /// </summary>
         Type ObjectType { get; }
 
+        /// <summary>
+        /// Gets the type of this property.
+        /// </summary>
         Type PropertyType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the property is readable.
+        /// </summary>
+        bool IsReadable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the property is writable.
+        /// </summary>
+        bool IsWritable { get; }
 
         #endregion
     }

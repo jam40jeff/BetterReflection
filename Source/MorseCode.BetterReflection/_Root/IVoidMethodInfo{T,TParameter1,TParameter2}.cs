@@ -32,10 +32,38 @@
 
 namespace MorseCode.BetterReflection
 {
+    using System.Diagnostics.Contracts;
+
+    /// <summary>
+    /// An interface representing method info for an instance method on type <typeparamref name="T"/> accepting parameters of types
+    /// <typeparamref name="TParameter1" />, and <typeparamref name="TParameter2" />.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type on which this instance method may be called.
+    /// </typeparam>
+    /// <typeparam name="TParameter1">
+    /// The type of the first parameter.
+    /// </typeparam>
+    /// <typeparam name="TParameter2">
+    /// The type of the second parameter.
+    /// </typeparam>
+    [ContractClass(typeof(VoidMethodInfoInterfaceContract<,,>))]
     public interface IVoidMethodInfo<in T, in TParameter1, in TParameter2> : IMethodInfo<T>
     {
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Invokes the method.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to call the method.
+        /// </param>
+        /// <param name="parameter1">
+        /// The first parameter.
+        /// </param>
+        /// <param name="parameter2">
+        /// The second parameter.
+        /// </param>
         void Invoke(T o, TParameter1 parameter1, TParameter2 parameter2);
 
         #endregion

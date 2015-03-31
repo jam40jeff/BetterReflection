@@ -1,13 +1,13 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoWithSetValue.cs" company="MorseCode Software">
-// Copyright (c) 2014 MorseCode Software
+// <copyright file="ReadWritePropertyInfoInterfaceContract.cs" company="MorseCode Software">
+// Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
 // The MIT License (MIT)
 // 
-// Copyright (c) 2014 MorseCode Software
+// Copyright (c) 2015 MorseCode Software
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,68 @@
 
 namespace MorseCode.BetterReflection
 {
+    using System;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
-    public interface IPropertyInfoWithSetValue
+    [ContractClassFor(typeof(IReadWritePropertyInfo))]
+    internal abstract class ReadWritePropertyInfoInterfaceContract : IReadWritePropertyInfo
     {
-        PropertyInfo PropertyInfo { get; }
+        #region Explicit Interface Properties
 
-        void SetValueFullyUntyped(object o, object value);
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        Type IPropertyInfo.ObjectType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.PropertyType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Explicit Interface Methods
+
+        object IReadablePropertyInfo.GetValueUntyped(object o)
+        {
+            return null;
+        }
+
+        void IWritablePropertyInfo.SetValueFullyUntyped(object o, object value)
+        {
+        }
+
+        #endregion
     }
 }

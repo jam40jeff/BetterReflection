@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoWithGetValue{T,TProperty}.cs" company="MorseCode Software">
+// <copyright file="ReadablePropertyInfoInterfaceContract{T,TProperty}.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -32,11 +32,75 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IPropertyInfoWithGetValue<in T, out TProperty> : IPropertyInfoWithGetValue<T>
-    {
-        #region Public Methods and Operators
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Reflection;
 
-        new TProperty GetValue(T o);
+    [ContractClassFor(typeof(IReadablePropertyInfo<,>))]
+    internal abstract class ReadablePropertyInfoInterfaceContract<T, TProperty> : IReadablePropertyInfo<T, TProperty>
+    {
+        #region Explicit Interface Properties
+
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        Type IPropertyInfo.ObjectType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.PropertyType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Explicit Interface Methods
+
+        TProperty IReadablePropertyInfo<T, TProperty>.GetValue(T o)
+        {
+            Contract.Requires<ArgumentException>(!ReferenceEquals(o, null), "o");
+
+            return default(TProperty);
+        }
+
+        object IReadablePropertyInfo<T>.GetValue(T o)
+        {
+            return null;
+        }
+
+        object IReadablePropertyInfo.GetValueUntyped(object o)
+        {
+            return null;
+        }
 
         #endregion
     }

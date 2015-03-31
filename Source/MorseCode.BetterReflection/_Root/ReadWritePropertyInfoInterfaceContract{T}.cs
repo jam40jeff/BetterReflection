@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoWithGetValue.cs" company="MorseCode Software">
+// <copyright file="ReadWritePropertyInfoInterfaceContract{T}.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -32,19 +32,76 @@
 
 namespace MorseCode.BetterReflection
 {
+    using System;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
-    public interface IPropertyInfoWithGetValue
+    [ContractClassFor(typeof(IReadWritePropertyInfo<>))]
+    internal abstract class ReadWritePropertyInfoInterfaceContract<T> : IReadWritePropertyInfo<T>
     {
-        #region Public Properties
+        #region Explicit Interface Properties
 
-        PropertyInfo PropertyInfo { get; }
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        Type IPropertyInfo.ObjectType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.PropertyType
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Explicit Interface Methods
 
-        object GetValueUntyped(object o);
+        object IReadablePropertyInfo<T>.GetValue(T o)
+        {
+            return null;
+        }
+
+        object IReadablePropertyInfo.GetValueUntyped(object o)
+        {
+            return null;
+        }
+
+        void IWritablePropertyInfo.SetValueFullyUntyped(object o, object value)
+        {
+        }
+
+        void IWritablePropertyInfo<T>.SetValuePartiallyUntyped(T o, object value)
+        {
+        }
 
         #endregion
     }

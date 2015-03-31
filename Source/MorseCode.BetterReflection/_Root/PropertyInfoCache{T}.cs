@@ -34,7 +34,7 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
     internal static class PropertyInfoCache<T>
@@ -53,39 +53,123 @@ namespace MorseCode.BetterReflection
 
         static PropertyInfoCache()
         {
-            MethodInfo createPropertyInfoMethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreatePropertyInfo<object>(null));
+            MethodInfo createPropertyInfoMethodInfo = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => CreatePropertyInfo<object>(null));
             CreatePropertyInfoGenericMethodDefinition = createPropertyInfoMethodInfo.GetGenericMethodDefinition();
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1501:StatementMustNotBeOnSingleLine", Justification = "Reviewed. Suppression is OK here.")]
-        public static IPropertyInfo<T> GetPropertyInfo(PropertyInfo propertyInfo)
-        {
-            return PropertyInfoByPropertyInfo.GetOrAdd(propertyInfo, p => (IPropertyInfo<T>)CreatePropertyInfoGenericMethodDefinition.MakeGenericMethod(p.PropertyType).Invoke(null, new object[] { p }));
-        }
-
-        public static IPropertyInfo<T, TProperty> GetPropertyInfo<TProperty>(PropertyInfo propertyInfo)
-        {
-            IPropertyInfo<T> info = GetPropertyInfo(propertyInfo);
-            IPropertyInfo<T, TProperty> typedInfo = info as IPropertyInfo<T, TProperty>;
-            if (typedInfo == null)
-            {
-                throw new InvalidOperationException("For property with name " + info.PropertyInfo.Name + ", property type " + info.PropertyType.FullName + " was found, but property type " + typeof(TProperty).FullName + " was expected.");
-            }
-
-            return typedInfo;
         }
 
         #endregion
 
         #region Methods
 
-        private static IPropertyInfo<T, TProperty> CreatePropertyInfo<TProperty>(PropertyInfo propertyInfo)
+        internal static IPropertyInfo<T> GetPropertyInfo(PropertyInfo propertyInfo)
         {
-            return new PropertyInfo<T, TProperty>(propertyInfo);
+            Contract.Requires(propertyInfo != null);
+            Contract.Ensures(Contract.Result<IPropertyInfo<T>>() != null);
+
+            IPropertyInfo<T> result = PropertyInfoByPropertyInfo.GetOrAdd(propertyInfo, p => (IPropertyInfo<T>)CreatePropertyInfoGenericMethodDefinition.MakeGenericMethod(p.PropertyType).Invoke(null, new object[] { p }));
+            Contract.Assume(result != null);
+            return result;
+        }
+
+        internal static IReadWritePropertyInfo<T, TProperty> GetReadWritePropertyInfo<TProperty>(PropertyInfo propertyInfo)
+        {
+            Contract.Requires(propertyInfo != null);
+            Contract.Ensures(Contract.Result<IReadWritePropertyInfo<T, TProperty>>() != null);
+
+            IPropertyInfo<T> info = GetPropertyInfo(propertyInfo);
+
+            if (typeof(TProperty) != info.PropertyType)
+            {
+                throw new InvalidOperationException("For property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ", property type " + info.PropertyType.FullName + " was found, but a type assignable to " + typeof(TProperty).FullName + " was expected.");
+            }
+
+            if (!info.IsReadable || !info.IsWritable)
+            {
+                throw new InvalidOperationException("Property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + " is not readable and writable.");
+            }
+
+            IReadWritePropertyInfo<T, TProperty> typedInfo = info as IReadWritePropertyInfo<T, TProperty>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("An unknown error occurred obtaining readable and writable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IReadablePropertyInfo<T, TProperty> GetReadablePropertyInfo<TProperty>(PropertyInfo propertyInfo)
+        {
+            Contract.Requires(propertyInfo != null);
+            Contract.Ensures(Contract.Result<IReadablePropertyInfo<T, TProperty>>() != null);
+
+            IPropertyInfo<T> info = GetPropertyInfo(propertyInfo);
+
+            if (!typeof(TProperty).IsAssignableFrom(info.PropertyType))
+            {
+                throw new InvalidOperationException("For property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ", property type " + info.PropertyType.FullName + " was found, but a type assignable to " + typeof(TProperty).FullName + " was expected.");
+            }
+
+            if (!info.IsReadable)
+            {
+                throw new InvalidOperationException("Property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + " is not readable.");
+            }
+
+            IReadablePropertyInfo<T, TProperty> typedInfo = info as IReadablePropertyInfo<T, TProperty>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("An unknown error occurred obtaining readable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IWritablePropertyInfo<T, TProperty> GetWritablePropertyInfo<TProperty>(PropertyInfo propertyInfo)
+        {
+            Contract.Requires(propertyInfo != null);
+            Contract.Ensures(Contract.Result<IWritablePropertyInfo<T, TProperty>>() != null);
+
+            IPropertyInfo<T> info = GetPropertyInfo(propertyInfo);
+
+            if (!info.PropertyType.IsAssignableFrom(typeof(TProperty)))
+            {
+                throw new InvalidOperationException("For property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ", property type " + info.PropertyType.FullName + " was found, but a type assignable to " + typeof(TProperty).FullName + " was expected.");
+            }
+
+            if (!info.IsWritable)
+            {
+                throw new InvalidOperationException("Property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + " is not writable.");
+            }
+
+            IWritablePropertyInfo<T, TProperty> typedInfo = info as IWritablePropertyInfo<T, TProperty>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("An unknown error occurred obtaining writable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+            }
+
+            return typedInfo;
+        }
+
+        private static IPropertyInfo<T> CreatePropertyInfo<TProperty>(PropertyInfo propertyInfo)
+        {
+            Contract.Requires(propertyInfo != null);
+            Contract.Ensures(Contract.Result<IPropertyInfo<T>>() != null);
+
+            if (propertyInfo.CanRead && propertyInfo.CanWrite)
+            {
+                return new ReadWritePropertyInfo<T, TProperty>(propertyInfo);
+            }
+
+            if (propertyInfo.CanRead)
+            {
+                return new ReadOnlyPropertyInfo<T, TProperty>(propertyInfo);
+            }
+
+            if (propertyInfo.CanWrite)
+            {
+                return new WriteOnlyPropertyInfo<T, TProperty>(propertyInfo);
+            }
+
+            throw new InvalidOperationException("Cannot create property info for a property which is neither readable nor writable.");
         }
 
         #endregion

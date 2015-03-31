@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfoWithSetValue{T}.cs" company="MorseCode Software">
+// <copyright file="IWritablePropertyInfo.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -32,11 +32,26 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IPropertyInfoWithSetValue<in T> : IPropertyInfoWithSetValue
+    using System.Diagnostics.Contracts;
+
+    /// <summary>
+    /// An interface representing property info for an instance property whose value is writable.
+    /// </summary>
+    [ContractClass(typeof(WritablePropertyInfoInterfaceContract))]
+    public interface IWritablePropertyInfo : IPropertyInfo
     {
         #region Public Methods and Operators
 
-        void SetValuePartiallyUntyped(T o, object value);
+        /// <summary>
+        /// Sets the property value with neither a typed object instance on which to set the property nor a typed property value.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to set the property.
+        /// </param>
+        /// <param name="value">
+        /// The value of the property.
+        /// </param>
+        void SetValueFullyUntyped(object o, object value);
 
         #endregion
     }

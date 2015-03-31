@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TypeInfo.cs" company="MorseCode Software">
+// <copyright file="TypeInfoFactory.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -34,28 +34,65 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Diagnostics.Contracts;
     using System.Reflection;
 
+    /// <summary>
+    /// Provides factory methods for creating type info instances.
+    /// </summary>
     public static class TypeInfoFactory
     {
+        #region Static Fields
+
         private static readonly MethodInfo GetTypeInfoGenericMethodDefinition;
 
-        private static readonly ConcurrentDictionary<Type, ITypeInfo> TypeInfoByType;
+        private static readonly ConcurrentDictionary<Type, ITypeInfo> TypeInfoByType = new ConcurrentDictionary<Type, ITypeInfo>();
+
+        #endregion
+
+        #region Constructors and Destructors
 
         static TypeInfoFactory()
         {
             GetTypeInfoGenericMethodDefinition = StaticReflection.GetInScopeMethodInfoInternal(() => GetTypeInfo<object>());
         }
 
+        #endregion
+
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Gets the type info for type <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">
+        /// The type for which to get the type info.
+        /// </param>
+        /// <returns>
+        /// The type info for type <paramref name="type"/>.
+        /// </returns>
         public static ITypeInfo GetTypeInfo(Type type)
         {
-            return TypeInfoByType.GetOrAdd(type, t => (ITypeInfo)GetTypeInfoGenericMethodDefinition.MakeGenericMethod(t).Invoke(null, new object[0]));
+            Contract.Requires<ArgumentNullException>(type != null, "type");
+            Contract.Ensures(Contract.Result<ITypeInfo>() != null);
+
+            ITypeInfo typeInfo = TypeInfoByType.GetOrAdd(type, t => (ITypeInfo)GetTypeInfoGenericMethodDefinition.MakeGenericMethod(t).Invoke(null, new object[0]));
+            Contract.Assume(typeInfo != null);
+            return typeInfo;
         }
 
+        /// <summary>
+        /// Gets the type info for type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type for which to get the type info.
+        /// </typeparam>
+        /// <returns>
+        /// The type info for type <typeparamref name="T"/>.
+        /// </returns>
         public static ITypeInfo<T> GetTypeInfo<T>()
         {
+            Contract.Ensures(Contract.Result<ITypeInfo<T>>() != null);
+
             return Helper<T>.TypeInfo;
         }
 

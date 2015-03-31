@@ -33,12 +33,17 @@
 namespace MorseCode.BetterReflection
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
 
     using MorseCode.FrameworkExtensions;
 
-    internal class MethodInfo<T, TReturn> : IMethodInfo<T, TReturn>
+    [Serializable]
+    internal class MethodInfo<T, TReturn> : IMethodInfo<T, TReturn>, ISerializable
     {
         #region Fields
 
@@ -61,6 +66,23 @@ namespace MorseCode.BetterReflection
             this.invoker = new Lazy<Func<T, TReturn>>(() => DelegateUtility.CreateDelegate<Func<T, TReturn>>(this.methodInfo));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MethodInfo{T,TReturn}"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [ContractVerification(false)]
+        // ReSharper disable UnusedParameter.Local
+        protected MethodInfo(SerializationInfo info, StreamingContext context)
+            // ReSharper restore UnusedParameter.Local
+            : this((MethodInfo)info.GetValue("m", typeof(MethodInfo)))
+        {
+        }
+
         #endregion
 
         #region Explicit Interface Properties
@@ -81,7 +103,7 @@ namespace MorseCode.BetterReflection
             }
         }
 
-        Type[] IMethodInfo.ParameterTypes
+        IReadOnlyList<Type> IMethodInfo.ParameterTypes
         {
             get
             {
@@ -99,6 +121,25 @@ namespace MorseCode.BetterReflection
 
         #endregion
 
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Gets the object data to serialize.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("m", this.methodInfo);
+        }
+
+        #endregion
+
         #region Explicit Interface Methods
 
         TReturn IMethodInfo<T, TReturn>.Invoke(T o)
@@ -106,24 +147,35 @@ namespace MorseCode.BetterReflection
             return this.invoker.Value(o);
         }
 
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
+        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
         {
             if (!(o is T))
             {
                 throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
             }
 
-            return this.methodInfoInstance.InvokePartiallyUntyped((T)o);
+            return this.methodInfoInstance.InvokePartiallyUntyped((T)o, parameters);
+        }
+
+        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
+        {
+            return this.methodInfoInstance.InvokeFullyUntyped((T)o, (IEnumerable<object>)parameters);
+        }
+
+        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
+        {
+            List<object> parameterList = (parameters ?? new object[0]).ToList();
+            if (parameterList.Count != 0)
+            {
+                throw new ArgumentException("Received parameters of type {" + string.Join(",", (parameters ?? new Type[0]).Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
+            }
+
+            return this.methodInfoInstance.Invoke(o);
         }
 
         object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
         {
-            if (parameters != null && parameters.Length > 0)
-            {
-                throw new ArgumentException("Received parameters of type {" + string.Join(",", parameters.Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
-            }
-
-            return this.methodInfoInstance.Invoke(o);
+            return this.methodInfoInstance.InvokePartiallyUntyped(o, (IEnumerable<object>)parameters);
         }
 
         #endregion

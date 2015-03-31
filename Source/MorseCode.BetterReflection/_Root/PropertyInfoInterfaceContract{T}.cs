@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IPropertyInfo{T,TProperty}.cs" company="MorseCode Software">
+// <copyright file="PropertyInfoInterfaceContract{T}.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -32,7 +32,55 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IPropertyInfo<in T, TProperty> : IPropertyInfo<T>, IPropertyInfoWithGetValue<T, TProperty>, IPropertyInfoWithSetValue<T, TProperty>
+    using System;
+    using System.Diagnostics.Contracts;
+    using System.Reflection;
+
+    [ContractClassFor(typeof(IPropertyInfo<>))]
+    internal abstract class PropertyInfoInterfaceContract<T> : IPropertyInfo<T>
     {
+        #region Explicit Interface Properties
+
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.ObjectType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        Type IPropertyInfo.PropertyType
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        bool IPropertyInfo.IsReadable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        #endregion
     }
 }

@@ -34,7 +34,7 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
 
@@ -56,14 +56,8 @@ namespace MorseCode.BetterReflection
 
         static MethodInfoCache()
         {
-            CreateVoidMethodInfoGenericMethodDefinitions = new MethodInfo[2];
-            CreateMethodInfoGenericMethodDefinitions = new MethodInfo[3];
-
-            MethodInfo createVoidMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object>(null));
-            CreateVoidMethodInfoGenericMethodDefinitions[0] = createVoidMethodInfo1MethodInfo.GetGenericMethodDefinition();
-
-            MethodInfo createVoidMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object>(null));
-            CreateVoidMethodInfoGenericMethodDefinitions[1] = createVoidMethodInfo2MethodInfo.GetGenericMethodDefinition();
+            CreateMethodInfoGenericMethodDefinitions = new MethodInfo[9];
+            CreateVoidMethodInfoGenericMethodDefinitions = new MethodInfo[8];
 
             MethodInfo createMethodInfoMethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object>(null));
             CreateMethodInfoGenericMethodDefinitions[0] = createMethodInfoMethodInfo.GetGenericMethodDefinition();
@@ -73,16 +67,168 @@ namespace MorseCode.BetterReflection
 
             MethodInfo createMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object>(null));
             CreateMethodInfoGenericMethodDefinitions[2] = createMethodInfo2MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[3] = createMethodInfo3MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[4] = createMethodInfo4MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[5] = createMethodInfo5MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[6] = createMethodInfo6MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[7] = createMethodInfo7MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateMethodInfo<object, object, object, object, object, object, object, object, object>(null));
+            CreateMethodInfoGenericMethodDefinitions[8] = createMethodInfo8MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo1MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[0] = createVoidMethodInfo1MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo2MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[1] = createVoidMethodInfo2MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo3MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[2] = createVoidMethodInfo3MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo4MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[3] = createVoidMethodInfo4MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo5MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[4] = createVoidMethodInfo5MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo6MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[5] = createVoidMethodInfo6MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo7MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[6] = createVoidMethodInfo7MethodInfo.GetGenericMethodDefinition();
+
+            MethodInfo createVoidMethodInfo8MethodInfo = StaticReflection.GetInScopeMethodInfoInternal(() => CreateVoidMethodInfo<object, object, object, object, object, object, object, object>(null));
+            CreateVoidMethodInfoGenericMethodDefinitions[7] = createVoidMethodInfo8MethodInfo.GetGenericMethodDefinition();
         }
 
         #endregion
 
-        #region Public Methods and Operators
+        #region Methods
 
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1501:StatementMustNotBeOnSingleLine", Justification = "Reviewed. Suppression is OK here.")]
-        public static IMethodInfo<T> GetMethodInfo(MethodInfo methodInfo)
+        internal static IMethodInfo<T, TReturn> GetMethodInfo<TReturn>(MethodInfo methodInfo)
         {
-            return MethodInfoByMethodInfo.GetOrAdd(
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TReturn> typedInfo = info as IMethodInfo<T, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TReturn> GetMethodInfo<TParameter1, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TReturn> GetMethodInfo<TParameter1, TParameter2, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IMethodInfo<T> GetMethodInfo(MethodInfo methodInfo)
+        {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T>>() != null);
+
+            IMethodInfo<T> result = MethodInfoByMethodInfo.GetOrAdd(
                 methodInfo,
                 m =>
                 {
@@ -109,45 +255,11 @@ namespace MorseCode.BetterReflection
 
                     return (IMethodInfo<T>)CreateMethodInfoGenericMethodDefinitions[parameters.Length].MakeGenericMethod(parameters.Select(p => p.ParameterType).Concat(new[] { m.ReturnType }).ToArray()).Invoke(null, new object[] { m });
                 });
+            Contract.Assume(result != null);
+            return result;
         }
 
-        public static IMethodInfo<T, TReturn> GetMethodInfo<TReturn>(MethodInfo methodInfo)
-        {
-            IMethodInfo<T> info = GetMethodInfo(methodInfo);
-            IMethodInfo<T, TReturn> typedInfo = info as IMethodInfo<T, TReturn>;
-            if (typedInfo == null)
-            {
-                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
-            }
-
-            return typedInfo;
-        }
-
-        public static IMethodInfo<T, TReturn, TParameter1> GetMethodInfo<TReturn, TParameter1>(MethodInfo methodInfo)
-        {
-            IMethodInfo<T> info = GetMethodInfo(methodInfo);
-            IMethodInfo<T, TReturn, TParameter1> typedInfo = info as IMethodInfo<T, TReturn, TParameter1>;
-            if (typedInfo == null)
-            {
-                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
-            }
-
-            return typedInfo;
-        }
-
-        public static IMethodInfo<T, TReturn, TParameter1, TParameter2> GetMethodInfo<TReturn, TParameter1, TParameter2>(MethodInfo methodInfo)
-        {
-            IMethodInfo<T> info = GetMethodInfo(methodInfo);
-            IMethodInfo<T, TReturn, TParameter1, TParameter2> typedInfo = info as IMethodInfo<T, TReturn, TParameter1, TParameter2>;
-            if (typedInfo == null)
-            {
-                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
-            }
-
-            return typedInfo;
-        }
-
-        public static IVoidMethodInfo<T> GetVoidMethodInfo(MethodInfo methodInfo)
+        internal static IVoidMethodInfo<T> GetVoidMethodInfo(MethodInfo methodInfo)
         {
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T> typedInfo = info as IVoidMethodInfo<T>;
@@ -159,7 +271,7 @@ namespace MorseCode.BetterReflection
             return typedInfo;
         }
 
-        public static IVoidMethodInfo<T, TParameter1> GetVoidMethodInfo<TParameter1>(MethodInfo methodInfo)
+        internal static IVoidMethodInfo<T, TParameter1> GetVoidMethodInfo<TParameter1>(MethodInfo methodInfo)
         {
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1> typedInfo = info as IVoidMethodInfo<T, TParameter1>;
@@ -171,7 +283,7 @@ namespace MorseCode.BetterReflection
             return typedInfo;
         }
 
-        public static IVoidMethodInfo<T, TParameter1, TParameter2> GetVoidMethodInfo<TParameter1, TParameter2>(MethodInfo methodInfo)
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2> GetVoidMethodInfo<TParameter1, TParameter2>(MethodInfo methodInfo)
         {
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2>;
@@ -183,9 +295,77 @@ namespace MorseCode.BetterReflection
             return typedInfo;
         }
 
-        #endregion
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
 
-        #region Methods
+            return typedInfo;
+        }
+
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
+
+        internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(MethodInfo methodInfo)
+        {
+            IMethodInfo<T> info = GetMethodInfo(methodInfo);
+            IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>;
+            if (typedInfo == null)
+            {
+                throw new InvalidOperationException("For method with name " + info.MethodInfo.Name + ", the actual types did not match the expected types.");
+            }
+
+            return typedInfo;
+        }
 
         private static IMethodInfo<T, TReturn> CreateMethodInfo<TReturn>(MethodInfo methodInfo)
         {
@@ -202,6 +382,36 @@ namespace MorseCode.BetterReflection
             return new MethodInfo<T, TParameter1, TParameter2, TReturn>(methodInfo);
         }
 
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>(methodInfo);
+        }
+
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(methodInfo);
+        }
+
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(methodInfo);
+        }
+
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(methodInfo);
+        }
+
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(methodInfo);
+        }
+
+        private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(MethodInfo methodInfo)
+        {
+            return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(methodInfo);
+        }
+
         private static IVoidMethodInfo<T> CreateVoidMethodInfo(MethodInfo methodInfo)
         {
             return new VoidMethodInfo<T>(methodInfo);
@@ -215,6 +425,36 @@ namespace MorseCode.BetterReflection
         private static IVoidMethodInfo<T, TParameter1, TParameter2> CreateVoidMethodInfo<TParameter1, TParameter2>(MethodInfo methodInfo)
         {
             return new VoidMethodInfo<T, TParameter1, TParameter2>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(methodInfo);
+        }
+
+        private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(MethodInfo methodInfo)
+        {
+            return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(methodInfo);
         }
 
         #endregion

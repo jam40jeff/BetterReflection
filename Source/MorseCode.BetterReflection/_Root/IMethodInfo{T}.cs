@@ -32,8 +32,48 @@
 
 namespace MorseCode.BetterReflection
 {
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+
+    /// <summary>
+    /// An interface representing method info for an instance method on type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type on which this instance method may be called.
+    /// </typeparam>
+    [ContractClass(typeof(MethodInfoInterfaceContract<>))]
     public interface IMethodInfo<in T> : IMethodInfo
     {
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Invokes the method with a typed object instance on which to call the method but neither typed parameters nor a typed return value.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to call the method.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters to pass to the method.
+        /// </param>
+        /// <returns>
+        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
+        /// </returns>
+        object InvokePartiallyUntyped(T o, IEnumerable<object> parameters);
+
+        /// <summary>
+        /// Invokes the method with a typed object instance on which to call the method but neither typed parameters nor a typed return value.
+        /// </summary>
+        /// <param name="o">
+        /// The object on which to call the method.
+        /// </param>
+        /// <param name="parameters">
+        /// The parameters to pass to the method.
+        /// </param>
+        /// <returns>
+        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
+        /// </returns>
         object InvokePartiallyUntyped(T o, params object[] parameters);
+
+        #endregion
     }
 }

@@ -34,11 +34,15 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
 
-    internal class TypeInfo<T> : ITypeInfo<T>
+    [Serializable]
+    internal class TypeInfo<T> : ITypeInfo<T>, ISerializable
     {
         #region Fields
 
@@ -56,6 +60,23 @@ namespace MorseCode.BetterReflection
             this.typeInfo = this;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypeInfo{T}"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [ContractVerification(false)]
+        // ReSharper disable UnusedParameter.Local
+        protected TypeInfo(SerializationInfo info, StreamingContext context)
+            // ReSharper restore UnusedParameter.Local
+            : this()
+        {
+        }
+
         #endregion
 
         #region Explicit Interface Properties
@@ -66,6 +87,24 @@ namespace MorseCode.BetterReflection
             {
                 return this.type;
             }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Gets the object data to serialize.
+        /// </summary>
+        /// <param name="info">
+        /// The serialization info.
+        /// </param>
+        /// <param name="context">
+        /// The serialization context.
+        /// </param>
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
         }
 
         #endregion
@@ -93,16 +132,19 @@ namespace MorseCode.BetterReflection
             return propertyInfo == null ? null : PropertyInfoCache<T>.GetPropertyInfo(propertyInfo);
         }
 
-        IPropertyInfo<T, TProperty> ITypeInfo<T>.GetProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+        IReadablePropertyInfo<T, TProperty> ITypeInfo<T>.GetReadableProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
-            MemberInfo memberInfo = StaticReflection<T>.GetMemberInfoInternal(propertyExpression);
-            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
-            if (propertyInfo == null)
-            {
-                throw new InvalidOperationException("Expression is not a property.");
-            }
+            return PropertyInfoCache<T>.GetReadablePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
+        }
 
-            return PropertyInfoCache<T>.GetPropertyInfo<TProperty>(propertyInfo);
+        IWritablePropertyInfo<T, TProperty> ITypeInfo<T>.GetWritableProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+        {
+            return PropertyInfoCache<T>.GetWritablePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
+        }
+
+        IReadWritePropertyInfo<T, TProperty> ITypeInfo<T>.GetReadWriteProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+        {
+            return PropertyInfoCache<T>.GetReadWritePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
         }
 
         IEnumerable<IMethodInfo> ITypeInfo.GetMethods()
@@ -126,45 +168,129 @@ namespace MorseCode.BetterReflection
             return methodInfo == null ? null : MethodInfoCache<T>.GetMethodInfo(methodInfo);
         }
 
-        private MethodInfo GetMethodInfo<TMethod>(Expression<Func<T, TMethod>> methodExpression)
-        {
-            return StaticReflection<T>.GetMethodInfoInternal(methodExpression);
-        }
-
-        IVoidMethodInfo<T> ITypeInfo<T>.GetVoidMethod(Expression<Func<T, Action>> methodExpression)
-        {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
-            return MethodInfoCache<T>.GetVoidMethodInfo(methodInfo);
-        }
-
-        IVoidMethodInfo<T, TParameter1> ITypeInfo<T>.GetVoidMethod<TParameter1>(Expression<Func<T, Action<TParameter1>>> methodExpression)
-        {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
-            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1>(methodInfo);
-        }
-
-        IVoidMethodInfo<T, TParameter1, TParameter2> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2>(Expression<Func<T, Action<TParameter1, TParameter2>>> methodExpression)
-        {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
-            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2>(methodInfo);
-        }
-
         IMethodInfo<T, TReturn> ITypeInfo<T>.GetMethod<TReturn>(Expression<Func<T, Func<TReturn>>> methodExpression)
         {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
             return MethodInfoCache<T>.GetMethodInfo<TReturn>(methodInfo);
         }
 
         IMethodInfo<T, TParameter1, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TReturn>(Expression<Func<T, Func<TParameter1, TReturn>>> methodExpression)
         {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
             return MethodInfoCache<T>.GetMethodInfo<TParameter1, TReturn>(methodInfo);
         }
 
         IMethodInfo<T, TParameter1, TParameter2, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TReturn>>> methodExpression)
         {
-            MethodInfo methodInfo = this.GetMethodInfo(methodExpression);
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
             return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(methodInfo);
+        }
+
+        IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> ITypeInfo<T>.GetMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(Expression<Func<T, Func<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(methodInfo);
+        }
+
+        IVoidMethodInfo<T> ITypeInfo<T>.GetVoidMethod(Expression<Func<T, Action>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1> ITypeInfo<T>.GetVoidMethod<TParameter1>(Expression<Func<T, Action<TParameter1>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2>(Expression<Func<T, Action<TParameter1, TParameter2>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3, TParameter4>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3, TParameter4>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(methodInfo);
+        }
+
+        IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> ITypeInfo<T>.GetVoidMethod<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(Expression<Func<T, Action<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>>> methodExpression)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodExpression);
+            return MethodInfoCache<T>.GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(methodInfo);
+        }
+
+        private static MethodInfo GetMethodInfo<TMethod>(Expression<Func<T, TMethod>> methodExpression)
+        {
+            return StaticReflection<T>.GetMethodInfoInternal(methodExpression);
+        }
+
+        private static PropertyInfo GetPropertyInfo<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
+        {
+            MemberInfo memberInfo = StaticReflection<T>.GetMemberInfoInternal(propertyExpression);
+            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
+            if (propertyInfo == null)
+            {
+                throw new InvalidOperationException("Expression is not a property.");
+            }
+
+            return propertyInfo;
         }
 
         #endregion

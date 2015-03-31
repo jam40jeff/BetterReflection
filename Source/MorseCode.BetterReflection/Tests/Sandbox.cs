@@ -70,6 +70,53 @@ namespace MorseCode.BetterReflection.Tests
         #region Public Methods and Operators
 
         [Test]
+        public void WritablePropertyInfo()
+        {
+            Hey hey = new Hey();
+            IWritablePropertyInfo<Hey, int> p = TypeInfoFactory.GetTypeInfo<Hey>().GetWritableProperty(o => o.TestInt);
+            p.SetValue(hey, 5);
+
+            Assert.AreEqual(5, hey.TestInt);
+        }
+
+        [Test]
+        public void ReadablePropertyInfo()
+        {
+            Hey hey = new Hey();
+            hey.TestInt = 5;
+            IReadablePropertyInfo<Hey, int> p = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(o => o.TestInt);
+
+            Assert.AreEqual(5, p.GetValue(hey));
+        }
+
+        [Test]
+        public void ReadOnlyPropertyInfo()
+        {
+            Hey hey = new Hey();
+            IReadablePropertyInfo<Hey, int> p = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(o => o.ReadOnlyProperty);
+
+            Assert.AreEqual(7, p.GetValue(hey));
+        }
+
+        [Test]
+        public void ReadOnlyPropertyInfoError()
+        {
+            InvalidOperationException actual = null;
+            try
+            {
+                TypeInfoFactory.GetTypeInfo<Hey>().GetWritableProperty(o => o.ReadOnlyProperty);
+            }
+            catch (InvalidOperationException e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("Property with name " + StaticReflection<Hey>.GetMemberInfo(o => o.ReadOnlyProperty).Name + " on type " +
+                typeof(Hey).FullName + " is not writable.", actual.Message);
+        }
+
+        [Test]
         public void GenericTypeInfoEquality()
         {
             Type t1 = typeof(TestGeneric<>);
@@ -88,7 +135,7 @@ namespace MorseCode.BetterReflection.Tests
         {
             PropertyInfo p1 = typeof(Hey).GetProperty("TestInt");
             PropertyInfo p2 = typeof(Hey).GetProperty("TestInt");
-            PropertyInfo p3 = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt).PropertyInfo;
+            PropertyInfo p3 = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(o => o.TestInt).PropertyInfo;
             Assert.AreEqual(p1, p2);
             Assert.AreEqual(p1, p3);
         }
@@ -279,8 +326,8 @@ namespace MorseCode.BetterReflection.Tests
             sw.Reset();
 
             sw.Start();
-            IPropertyInfo<Hey, int> propertyInfo1a = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt);
-            IPropertyInfo<Hey, int> propertyInfo2a = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(o => o.TestInt2);
+            IReadablePropertyInfo<Hey, int> propertyInfo1a = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(o => o.TestInt);
+            IReadablePropertyInfo<Hey, int> propertyInfo2a = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(o => o.TestInt2);
             for (int i = 0; i < 500000; i++)
             {
                 this.BetterReflectionWithCaching(hey, propertyInfo1a);
@@ -327,11 +374,11 @@ namespace MorseCode.BetterReflection.Tests
 
         private TProperty BetterReflection<TProperty>(Hey o, Expression<Func<Hey, TProperty>> propertyExpression)
         {
-            IPropertyInfo<Hey, TProperty> p = TypeInfoFactory.GetTypeInfo<Hey>().GetProperty(propertyExpression);
+            IReadablePropertyInfo<Hey, TProperty> p = TypeInfoFactory.GetTypeInfo<Hey>().GetReadableProperty(propertyExpression);
             return p.GetValue(o);
         }
 
-        private TProperty BetterReflectionWithCaching<TProperty>(Hey o, IPropertyInfo<Hey, TProperty> propertyInfo)
+        private TProperty BetterReflectionWithCaching<TProperty>(Hey o, IReadablePropertyInfo<Hey, TProperty> propertyInfo)
         {
             return propertyInfo.GetValue(o);
         }
@@ -430,15 +477,38 @@ namespace MorseCode.BetterReflection.Tests
 
         public class Hey
         {
+            private int writeOnlyProperty;
+
             #region Public Properties
 
             public int TestInt { get; set; }
 
             public int TestInt2 { get; set; }
 
+            public int ReadOnlyProperty
+            {
+                get
+                {
+                    return 7;
+                }
+            }
+
+            public int WriteOnlyProperty
+            {
+                set
+                {
+                    this.writeOnlyProperty = value;
+                }
+            }
+
             #endregion
 
             #region Public Methods and Operators
+
+            public int GetWriteOnlyProperty()
+            {
+                return this.writeOnlyProperty;
+            }
 
             public void Clear()
             {

@@ -32,7 +32,17 @@
 
 namespace MorseCode.BetterReflection
 {
-    public interface IPropertyInfo<in T> : IPropertyInfo, IPropertyInfoWithGetValue<T>, IPropertyInfoWithSetValue<T>
+    using System.Diagnostics.Contracts;
+
+    /// <summary>
+    /// An interface representing property info for an instance property on type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The type on which this instance property may be used.
+    /// </typeparam>
+    [ContractClass(typeof(PropertyInfoInterfaceContract<>))]
+    // ReSharper disable UnusedTypeParameter
+    public interface IPropertyInfo<in T> : IPropertyInfo // ReSharper restore UnusedTypeParameter
     {
     }
 }
