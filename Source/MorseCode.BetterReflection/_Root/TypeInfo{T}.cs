@@ -89,6 +89,22 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string ITypeInfo.Name
+        {
+            get
+            {
+                return this.type.Name;
+            }
+        }
+
+        string ITypeInfo.FullName
+        {
+            get
+            {
+                return this.type.FullName;
+            }
+        }
+
         #endregion
 
         #region Public Methods and Operators

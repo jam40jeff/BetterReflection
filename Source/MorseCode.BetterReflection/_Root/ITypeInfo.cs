@@ -47,6 +47,16 @@ namespace MorseCode.BetterReflection
         /// </summary>
         Type Type { get; }
 
+        /// <summary>
+        /// Gets the name of the type represented by this type info.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets the full name of the type represented by this type info.
+        /// </summary>
+        string FullName { get; }
+
         #endregion
 
         #region Public Methods and Operators

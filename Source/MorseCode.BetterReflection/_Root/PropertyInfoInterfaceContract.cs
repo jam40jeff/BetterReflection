@@ -41,11 +41,27 @@ namespace MorseCode.BetterReflection
     {
         #region Explicit Interface Properties
 
-        PropertyInfo IPropertyInfo.PropertyInfo
+        bool IPropertyInfo.IsReadable
         {
             get
             {
-                Contract.Ensures(Contract.Result<PropertyInfo>() != null);
+                return false;
+            }
+        }
+
+        bool IPropertyInfo.IsWritable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        string IPropertyInfo.Name
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
 
                 return null;
             }
@@ -61,6 +77,16 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        PropertyInfo IPropertyInfo.PropertyInfo
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<PropertyInfo>() != null);
+
+                return null;
+            }
+        }
+
         Type IPropertyInfo.PropertyType
         {
             get
@@ -68,22 +94,6 @@ namespace MorseCode.BetterReflection
                 Contract.Ensures(Contract.Result<Type>() != null);
 
                 return null;
-            }
-        }
-
-        bool IPropertyInfo.IsReadable
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        bool IPropertyInfo.IsWritable
-        {
-            get
-            {
-                return false;
             }
         }
 

@@ -51,6 +51,11 @@ namespace MorseCode.BetterReflection
         MethodInfo MethodInfo { get; }
 
         /// <summary>
+        /// Gets the name of this property.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Gets the type on which this instance method may be called.
         /// </summary>
         Type ObjectType { get; }

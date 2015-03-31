@@ -50,6 +50,11 @@ namespace MorseCode.BetterReflection
         PropertyInfo PropertyInfo { get; }
 
         /// <summary>
+        /// Gets the name of this property.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Gets the type on which this instance property may be used.
         /// </summary>
         Type ObjectType { get; }

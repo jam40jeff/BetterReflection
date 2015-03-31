@@ -50,6 +50,14 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string IMethodInfo.Name
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         Type IMethodInfo.ObjectType
         {
             get

@@ -95,6 +95,14 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string IMethodInfo.Name
+        {
+            get
+            {
+                return this.methodInfo.Name;
+            }
+        }
+
         Type IMethodInfo.ObjectType
         {
             get

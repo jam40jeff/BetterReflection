@@ -68,6 +68,26 @@ namespace MorseCode.BetterReflection
         }
 
         /// <summary>
+        /// Gets the name of a member accessible on type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="memberExpression">
+        /// The member expression of the form <c>o => o.Member</c> which returns a member of type <typeparamref name="TMember"/> given an instance of type <typeparamref name="T"/>.
+        /// </param>
+        /// <typeparam name="TMember">
+        /// The type of the member.
+        /// </typeparam>
+        /// <returns>
+        /// The name of the member.
+        /// </returns>
+        public static string GetMemberName<TMember>(Expression<Func<T, TMember>> memberExpression)
+        {
+            Contract.Requires<ArgumentNullException>(memberExpression != null, "memberExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetMemberInfoInternal(memberExpression).Name;
+        }
+
+        /// <summary>
         /// Gets method info for a method accessible on type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="methodExpression">
@@ -122,6 +142,43 @@ namespace MorseCode.BetterReflection
             Contract.Ensures(Contract.Result<MethodInfo>() != null);
 
             return GetMethodInfoFromMethodCallInternal(methodCallExpression);
+        }
+
+        /// <summary>
+        /// Gets the name of a method accessible on type <typeparamref name="T"/> by calling the method.
+        /// </summary>
+        /// <param name="methodCallExpression">
+        /// The in-scope method call expression of the form <c>o =&gt; o.Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The name of the member.
+        /// </returns>
+        public static string GetMethodName(Expression<Action<T>> methodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(methodCallExpression != null, "methodCallExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetMethodInfoFromMethodCallInternal(methodCallExpression).Name;
+        }
+
+        /// <summary>
+        /// Gets the name of a method accessible on type <typeparamref name="T"/> by calling the method.
+        /// </summary>
+        /// <typeparam name="TReturn">
+        /// The return type of the method.
+        /// </typeparam>
+        /// <param name="methodCallExpression">
+        /// The in-scope method call expression of the form <c>o =&gt; o.Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The name of the member.
+        /// </returns>
+        public static string GetMethodName<TReturn>(Expression<Func<T, TReturn>> methodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(methodCallExpression != null, "methodCallExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetMethodInfoFromMethodCallInternal(methodCallExpression).Name;
         }
 
         #endregion

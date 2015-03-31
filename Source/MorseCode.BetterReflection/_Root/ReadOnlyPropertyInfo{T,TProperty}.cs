@@ -101,6 +101,14 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string IPropertyInfo.Name
+        {
+            get
+            {
+                return this.propertyInfo.Name;
+            }
+        }
+
         Type IPropertyInfo.ObjectType
         {
             get

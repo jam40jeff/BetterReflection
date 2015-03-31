@@ -66,6 +66,27 @@ namespace MorseCode.BetterReflection
         }
 
         /// <summary>
+        /// Gets the name of an in-scope member, which may be a local variable, parameter, static member, or any instance member
+        /// currently in scope.
+        /// </summary>
+        /// <param name="inScopeMemberExpression">
+        /// The in-scope member expression of the form <c>() => member</c> which returns a member of type <typeparamref name="TMember"/>.
+        /// </param>
+        /// <typeparam name="TMember">
+        /// The type of the member.
+        /// </typeparam>
+        /// <returns>
+        /// The name of the member.
+        /// </returns>
+        public static string GetInScopeMemberName<TMember>(Expression<Func<TMember>> inScopeMemberExpression)
+        {
+            Contract.Requires<ArgumentNullException>(inScopeMemberExpression != null, "inScopeMemberExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetInScopeMemberInfoInternal(inScopeMemberExpression).Name;
+        }
+
+        /// <summary>
         /// Gets method info for an in-scope method, which may be a static method, or any instance method currently in scope.
         /// </summary>
         /// <param name="inScopeMethodExpression">
@@ -120,6 +141,43 @@ namespace MorseCode.BetterReflection
             Contract.Ensures(Contract.Result<MemberInfo>() != null);
 
             return GetInScopeMethodInfoFromMethodCallInternal(inScopeMethodCallExpression);
+        }
+
+        /// <summary>
+        /// Gets the name of an in-scope method, which may be a static method, or any instance method currently in scope, by calling the method.
+        /// </summary>
+        /// <param name="inScopeMethodCallExpression">
+        /// The in-scope method call expression of the form <c>() =&gt; Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The member info for the member.
+        /// </returns>
+        public static string GetInScopeMethodName(Expression<Action> inScopeMethodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetInScopeMethodInfoFromMethodCallInternal(inScopeMethodCallExpression).Name;
+        }
+
+        /// <summary>
+        /// Gets the name of an in-scope method, which may be a static method, or any instance method currently in scope, by calling the method.
+        /// </summary>
+        /// <typeparam name="TReturn">
+        /// The return type of the method.
+        /// </typeparam>
+        /// <param name="inScopeMethodCallExpression">
+        /// The in-scope method call expression of the form <c>() =&gt; Method(...)</c> where default values are passed for any parameters where necessary.
+        /// </param>
+        /// <returns>
+        /// The member info for the member.
+        /// </returns>
+        public static string GetInScopeMethodName<TReturn>(Expression<Func<TReturn>> inScopeMethodCallExpression)
+        {
+            Contract.Requires<ArgumentNullException>(inScopeMethodCallExpression != null, "inScopeMethodCallExpression");
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return GetInScopeMethodInfoFromMethodCallInternal(inScopeMethodCallExpression).Name;
         }
 
         #endregion

@@ -57,6 +57,14 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string IPropertyInfo.Name
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         Type IPropertyInfo.ObjectType
         {
             get

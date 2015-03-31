@@ -52,6 +52,16 @@ namespace MorseCode.BetterReflection
             }
         }
 
+        string IMethodInfo.Name
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+
+                return null;
+            }
+        }
+
         Type IMethodInfo.ObjectType
         {
             get
