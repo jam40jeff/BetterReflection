@@ -121,6 +121,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntypedWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethodWithException");
+
+            Exception actual = null;
+            try
+            {
+                method.InvokeUntyped(new Test(), new object[] { 1, 2 });
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1", actual.Message);
+        }
+
+        [Test]
         public void ReflectionWrapperMethodInfoFullyUntypedMethodInfo()
         {
             ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
@@ -237,6 +257,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoPartiallyUntypedInvokeUntypedWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUniqueWithException");
+
+            Exception actual = null;
+            try
+            {
+                method.InvokeUntyped(new Test(), new object[] { 1, 2 });
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("3", actual.Message);
         }
 
         [Test]
@@ -489,6 +529,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWithNoParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test());
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("0", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWithNoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -607,6 +667,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoWithOneParameterInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1", actual.Message);
         }
 
         [Test]
@@ -731,6 +811,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWithTwoParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWithTwoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -849,6 +949,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoWithThreeParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3", actual.Message);
         }
 
         [Test]
@@ -973,6 +1093,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWithFourParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3, 4);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3, 4", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWithFourParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -1091,6 +1231,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoWithFiveParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3, 4, 5);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3, 4, 5", actual.Message);
         }
 
         [Test]
@@ -1215,6 +1375,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWithSixParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3, 4, 5, 6);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWithSixParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -1336,6 +1516,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWithSevenParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3, 4, 5, 6, 7);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWithSevenParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -1454,6 +1654,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoWithEightParametersInvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test(), 1, 2, 3, 4, 5, 6, 7, 8);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8", actual.Message);
         }
 
         [Test]
@@ -2802,10 +3022,24 @@ namespace MorseCode.BetterReflection.Tests
             }
 
             // ReSharper disable UnusedMember.Local
+            public string TestReflectionWrapperMethodWithException(ref int parameter1, out int parameter2)
+            // ReSharper restore UnusedMember.Local
+            {
+                throw new Exception(parameter1.ToString(CultureInfo.InvariantCulture));
+            }
+
+            // ReSharper disable UnusedMember.Local
             public string TestMethodUnique(int parameter1, int parameter2)
             // ReSharper restore UnusedMember.Local
             {
                 return (parameter1 + parameter2).ToString(CultureInfo.InvariantCulture);
+            }
+
+            // ReSharper disable UnusedMember.Local
+            public string TestMethodUniqueWithException(int parameter1, int parameter2)
+            // ReSharper restore UnusedMember.Local
+            {
+                throw new Exception((parameter1 + parameter2).ToString(CultureInfo.InvariantCulture));
             }
 
             // ReSharper disable UnusedMember.Local
@@ -2858,6 +3092,51 @@ namespace MorseCode.BetterReflection.Tests
             public string TestMethod(int parameter1, int parameter2, int parameter3, int parameter4, int parameter5, int parameter6, int parameter7, int parameter8)
             {
                 return (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8).ToString(CultureInfo.InvariantCulture);
+            }
+
+            public string TestMethodWithException()
+            {
+                throw new Exception("0");
+            }
+
+            public string TestMethodWithException(int parameter1)
+            {
+                throw new Exception("1");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2)
+            {
+                throw new Exception("1, 2");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3)
+            {
+                throw new Exception("1, 2, 3");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3, int parameter4)
+            {
+                throw new Exception("1, 2, 3, 4");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3, int parameter4, int parameter5)
+            {
+                throw new Exception("1, 2, 3, 4, 5");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3, int parameter4, int parameter5, int parameter6)
+            {
+                throw new Exception("1, 2, 3, 4, 5, 6");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3, int parameter4, int parameter5, int parameter6, int parameter7)
+            {
+                throw new Exception("1, 2, 3, 4, 5, 6, 7");
+            }
+
+            public string TestMethodWithException(int parameter1, int parameter2, int parameter3, int parameter4, int parameter5, int parameter6, int parameter7, int parameter8)
+            {
+                throw new Exception("1, 2, 3, 4, 5, 6, 7, 8");
             }
 
             public void TestVoidMethod()

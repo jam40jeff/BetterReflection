@@ -37,23 +37,25 @@ namespace MorseCode.BetterReflection
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
-
-    using MorseCode.FrameworkExtensions;
 
     [Serializable]
     internal class ReflectionWrapperMethodInfo<T> : IMethodInfo<T>, ISerializable
     {
         #region Fields
 
+        private readonly Lazy<IReadOnlyList<Type>> invokeParameterTypes;
+
         private readonly MethodInfo methodInfo;
 
         private readonly IMethodInfo<T> methodInfoInstance;
 
         private readonly Lazy<IReadOnlyList<ParameterInfo>> methodParameters;
+
         private readonly Lazy<IReadOnlyList<Type>> parameterTypes;
-        private readonly Lazy<IReadOnlyList<Type>> invokeParameterTypes;
+
         private readonly Lazy<Type> returnType;
 
         #endregion
@@ -165,10 +167,20 @@ namespace MorseCode.BetterReflection
 
         object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
-            return this.methodInfo.Invoke(o, parameters);
+            try
+            {
+                return this.methodInfo.Invoke(o, parameters);
+            }
+            catch (TargetInvocationException e)
+            {
+                ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+                throw;
+            }
         }
 
         #endregion
+
+        #region Methods
 
         [ContractInvariantMethod]
         private void CodeContractsInvariants()
@@ -179,5 +191,7 @@ namespace MorseCode.BetterReflection
             Contract.Invariant(this.returnType != null);
             Contract.Invariant(this.methodInfoInstance != null);
         }
+
+        #endregion
     }
 }

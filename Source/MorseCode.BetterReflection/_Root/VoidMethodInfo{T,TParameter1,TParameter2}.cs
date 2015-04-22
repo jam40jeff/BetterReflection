@@ -35,8 +35,8 @@ namespace MorseCode.BetterReflection
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
-    using System.Linq;
     using System.Reflection;
+    using System.Runtime.ExceptionServices;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 
@@ -51,8 +51,6 @@ namespace MorseCode.BetterReflection
 
         private readonly MethodInfo methodInfo;
 
-        private readonly IVoidMethodInfo<T, TParameter1, TParameter2> methodInfoInstance;
-
         #endregion
 
         #region Constructors and Destructors
@@ -60,8 +58,6 @@ namespace MorseCode.BetterReflection
         public VoidMethodInfo(MethodInfo methodInfo)
         {
             this.methodInfo = methodInfo;
-
-            this.methodInfoInstance = this;
 
             this.invoker = new Lazy<Action<T, TParameter1, TParameter2>>(() => DelegateUtility.CreateDelegate<Action<T, TParameter1, TParameter2>>(this.methodInfo));
         }
@@ -157,7 +153,15 @@ namespace MorseCode.BetterReflection
 
         object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
-            return this.methodInfo.Invoke(o, parameters);
+            try
+            {
+                return this.methodInfo.Invoke(o, parameters);
+            }
+            catch (TargetInvocationException e)
+            {
+                ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+                throw;
+            }
         }
 
         #endregion

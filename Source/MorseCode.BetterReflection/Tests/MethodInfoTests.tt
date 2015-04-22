@@ -128,6 +128,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntypedWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethodWithException");
+
+            Exception actual = null;
+            try
+            {
+                method.InvokeUntyped(new Test(), new object[] { 1, 2 });
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("1", actual.Message);
+        }
+
+        [Test]
         public void ReflectionWrapperMethodInfoFullyUntypedMethodInfo()
         {
             ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
@@ -244,6 +264,26 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
+        }
+
+        [Test]
+        public void MethodInfoPartiallyUntypedInvokeUntypedWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUniqueWithException");
+
+            Exception actual = null;
+            try
+            {
+                method.InvokeUntyped(new Test(), new object[] { 1, 2 });
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("3", actual.Message);
         }
 
         [Test]
@@ -497,6 +537,26 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
+        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeWithException()
+        {
+            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
+            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethodWithException);
+
+            Exception actual = null;
+            try
+            {
+                method.Invoke(new Test()<#= string.Join(string.Empty, Enumerable.Range(1, n).Select(i => ", " + i)) #>);
+            }
+            catch (Exception e)
+            {
+                actual = e;
+            }
+
+            Assert.IsNotNull(actual);
+            Assert.AreEqual("<#= n == 0 ? "0" : string.Join(", ", Enumerable.Range(1, n).Select(i => i)) #>", actual.Message);
+        }
+
+        [Test]
         public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -701,10 +761,24 @@ namespace MorseCode.BetterReflection.Tests
             }
 
             // ReSharper disable UnusedMember.Local
+            public string TestReflectionWrapperMethodWithException(ref int parameter1, out int parameter2)
+            // ReSharper restore UnusedMember.Local
+            {
+                throw new Exception(parameter1.ToString(CultureInfo.InvariantCulture));
+            }
+
+            // ReSharper disable UnusedMember.Local
             public string TestMethodUnique(int parameter1, int parameter2)
             // ReSharper restore UnusedMember.Local
             {
                 return (parameter1 + parameter2).ToString(CultureInfo.InvariantCulture);
+            }
+
+            // ReSharper disable UnusedMember.Local
+            public string TestMethodUniqueWithException(int parameter1, int parameter2)
+            // ReSharper restore UnusedMember.Local
+            {
+                throw new Exception((parameter1 + parameter2).ToString(CultureInfo.InvariantCulture));
             }
 
             // ReSharper disable UnusedMember.Local
@@ -718,6 +792,13 @@ namespace MorseCode.BetterReflection.Tests
             public string TestMethod(<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "int parameter" + i)) #>)
             {
                 return (<#= n == 0 ? "0" : string.Join(" + ", Enumerable.Range(1, n).Select(i => i)) #>).ToString(CultureInfo.InvariantCulture);
+            }
+<# }); #>
+<# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
+
+            public string TestMethodWithException(<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "int parameter" + i)) #>)
+            {
+                throw new Exception("<#= n == 0 ? "0" : string.Join(", ", Enumerable.Range(1, n).Select(i => i)) #>");
             }
 <# }); #>
 <# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
