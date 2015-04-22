@@ -163,43 +163,9 @@ namespace MorseCode.BetterReflection
 
         #region Explicit Interface Methods
 
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
+        object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
-            if (!(o is T))
-            {
-                throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
-            }
-
-            return this.methodInfoInstance.InvokePartiallyUntyped((T)o, parameters);
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokeFullyUntyped((T)o, (IEnumerable<object>)parameters);
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
-        {
-            IList<object> parameterList = parameters as IList<object>;
-            object[] parameterArray = (parameters ?? new object[0]).ToArray();
-            if (parameterArray.Length != this.methodParameters.Value.Count || !parameterArray.Select((p, i) => new { Parameter = p, Index = i }).All(parameterAndIndex => this.invokeParameterTypes.Value[parameterAndIndex.Index].IsInstanceOfType(parameterAndIndex.Parameter) || (parameterAndIndex.Parameter == null && (!this.invokeParameterTypes.Value[parameterAndIndex.Index].IsValueType || this.methodParameters.Value[parameterAndIndex.Index].IsOut))))
-            {
-                throw new ArgumentException("Received " + (parameterArray.Length < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterArray.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + string.Join(", ", (this.invokeParameterTypes.Value ?? new Type[0]).Select(t => t.FullName)) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
-            }
-
-            object result = this.methodInfo.Invoke(o, parameterArray);
-
-            if (parameterList != null)
-            {
-                parameterArray.ForEach((p, i) => parameterList[i] = p);
-            }
-
-            return result;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokePartiallyUntyped(o, (IEnumerable<object>)parameters);
+            return this.methodInfo.Invoke(o, parameters);
         }
 
         #endregion

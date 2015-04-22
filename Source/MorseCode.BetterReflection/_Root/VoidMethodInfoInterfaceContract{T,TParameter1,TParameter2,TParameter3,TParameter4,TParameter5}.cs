@@ -91,22 +91,7 @@ namespace MorseCode.BetterReflection
             Contract.Requires<ArgumentNullException>(!ReferenceEquals(o, null), "o");
         }
 
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
-        {
-            return null;
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            return null;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
-        {
-            return null;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
+        object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
             return null;
         }

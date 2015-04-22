@@ -58,21 +58,7 @@ namespace MorseCode.BetterReflection
         /// <returns>
         /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
         /// </returns>
-        object InvokePartiallyUntyped(T o, IEnumerable<object> parameters);
-
-        /// <summary>
-        /// Invokes the method with a typed object instance on which to call the method but neither typed parameters nor a typed return value.
-        /// </summary>
-        /// <param name="o">
-        /// The object on which to call the method.
-        /// </param>
-        /// <param name="parameters">
-        /// The parameters to pass to the method.
-        /// </param>
-        /// <returns>
-        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
-        /// </returns>
-        object InvokePartiallyUntyped(T o, params object[] parameters);
+        object InvokeUntyped(T o, params object[] parameters);
 
         #endregion
     }

@@ -71,37 +71,5 @@ namespace MorseCode.BetterReflection
         Type ReturnType { get; }
 
         #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>
-        /// Invokes the method with neither a typed object instance on which to call the method, typed parameters, nor a typed return value.
-        /// </summary>
-        /// <param name="o">
-        /// The object on which to call the method.
-        /// </param>
-        /// <param name="parameters">
-        /// The parameters to pass to the method.
-        /// </param>
-        /// <returns>
-        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
-        /// </returns>
-        object InvokeFullyUntyped(object o, IEnumerable<object> parameters);
-
-        /// <summary>
-        /// Invokes the method with neither a typed object instance on which to call the method, typed parameters, nor a typed return value.
-        /// </summary>
-        /// <param name="o">
-        /// The object on which to call the method.
-        /// </param>
-        /// <param name="parameters">
-        /// The parameters to pass to the method.
-        /// </param>
-        /// <returns>
-        /// The return value.  For <code>void</code> methods, this will be <code>null</code>.
-        /// </returns>
-        object InvokeFullyUntyped(object o, params object[] parameters);
-
-        #endregion
     }
 }

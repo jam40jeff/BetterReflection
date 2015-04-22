@@ -93,23 +93,5 @@ namespace MorseCode.BetterReflection
         }
 
         #endregion
-
-        #region Explicit Interface Methods
-
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
-        {
-            Contract.Requires<ArgumentNullException>(o != null, "o");
-
-            return null;
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            Contract.Requires<ArgumentNullException>(o != null, "o");
-
-            return null;
-        }
-
-        #endregion
     }
 }

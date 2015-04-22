@@ -86,24 +86,7 @@ namespace MorseCode.BetterReflection
 
         #region Explicit Interface Methods
 
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
-        {
-            return null;
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            return null;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
-        {
-            Contract.Requires<ArgumentNullException>(!ReferenceEquals(o, null), "o");
-
-            return null;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
+        object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
             Contract.Requires<ArgumentNullException>(!ReferenceEquals(o, null), "o");
 

@@ -155,37 +155,9 @@ namespace MorseCode.BetterReflection
             this.invoker.Value(o, parameter1);
         }
 
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
+        object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
-            if (!(o is T))
-            {
-                throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
-            }
-
-            return this.methodInfoInstance.InvokePartiallyUntyped((T)o, parameters);
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokeFullyUntyped((T)o, (IEnumerable<object>)parameters);
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
-        {
-            IReadOnlyList<object> parameterList = (parameters ?? new object[0]).ToArray();
-            if (parameterList.Count != 1 || !(parameterList[0] is TParameter1))
-            {
-                throw new ArgumentException("Received " + (parameterList.Count < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterList.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + typeof(TParameter1) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
-            }
-
-            this.methodInfoInstance.Invoke(o, (TParameter1)parameterList[0]);
-
-            return null;
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokePartiallyUntyped(o, (IEnumerable<object>)parameters);
+            return this.methodInfo.Invoke(o, parameters);
         }
 
         #endregion

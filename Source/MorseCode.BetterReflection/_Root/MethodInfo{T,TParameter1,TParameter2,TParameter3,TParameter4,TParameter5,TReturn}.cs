@@ -155,35 +155,9 @@ namespace MorseCode.BetterReflection
             return this.invoker.Value(o, parameter1, parameter2, parameter3, parameter4, parameter5);
         }
 
-        object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
+        object IMethodInfo<T>.InvokeUntyped(T o, params object[] parameters)
         {
-            if (!(o is T))
-            {
-                throw new ArgumentException("Object was of type " + o.GetType().FullName + ", but must be convertible to type " + typeof(T).FullName + ".", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
-            }
-
-            return this.methodInfoInstance.InvokePartiallyUntyped((T)o, parameters);
-        }
-
-        object IMethodInfo.InvokeFullyUntyped(object o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokeFullyUntyped((T)o, (IEnumerable<object>)parameters);
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
-        {
-            IReadOnlyList<object> parameterList = (parameters ?? new object[0]).ToArray();
-            if (parameterList.Count != 5 || !(parameterList[0] is TParameter1) || !(parameterList[1] is TParameter2) || !(parameterList[2] is TParameter3) || !(parameterList[3] is TParameter4) || !(parameterList[4] is TParameter5))
-            {
-                throw new ArgumentException("Received " + (parameterList.Count < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterList.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + typeof(TParameter1) + ", " + typeof(TParameter2) + ", " + typeof(TParameter3) + ", " + typeof(TParameter4) + ", " + typeof(TParameter5) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
-            }
-
-            return this.methodInfoInstance.Invoke(o, (TParameter1)parameterList[0], (TParameter2)parameterList[1], (TParameter3)parameterList[2], (TParameter4)parameterList[3], (TParameter5)parameterList[4]);
-        }
-
-        object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
-        {
-            return this.methodInfoInstance.InvokePartiallyUntyped(o, (IEnumerable<object>)parameters);
+            return this.methodInfo.Invoke(o, parameters);
         }
 
         #endregion
