@@ -40,7 +40,6 @@
 namespace MorseCode.BetterReflection.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -97,19 +96,19 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
 
             object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokePartiallyUntyped(new Test(), arguments));
+            Assert.AreEqual("5", method.InvokeUntyped(new Test(), arguments));
 			Assert.AreEqual(2, arguments[0]);
 			Assert.AreEqual(3, arguments[1]);
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
@@ -117,7 +116,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -126,222 +125,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -390,130 +173,6 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
         public void MethodInfoPartiallyUntypedMethodInfo()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -559,16 +218,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void MethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
 
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 }));
+            Assert.AreEqual("3", method.InvokeUntyped(new Test(), new object[] { 1, 2 }));
         }
 
         [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void MethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
@@ -576,7 +235,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -585,213 +244,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -840,144 +292,6 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoInvokeExpectsNoParametersWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUniqueNoParameters");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
         public void VoidMethodInfoPartiallyUntypedMethodInfo()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -1023,7 +337,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void VoidMethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
@@ -1031,7 +345,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3 });
             }
             catch (Exception e)
             {
@@ -1043,7 +357,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
@@ -1051,7 +365,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3 });
             }
             catch (ArgumentNullException e)
             {
@@ -1060,246 +374,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -1345,166 +419,6 @@ namespace MorseCode.BetterReflection.Tests
             IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
 
             Assert.AreEqual(typeof(void), method.ReturnType);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoInvokeExpectsNoParametersWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUniqueNoParameters");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 <# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
 
@@ -1583,16 +497,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntyped()
+        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
 
-            Assert.AreEqual("<#= Enumerable.Range(0, n + 1).Sum() #>", method.InvokePartiallyUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>));
+            Assert.AreEqual("<#= Enumerable.Range(0, n + 1).Sum() #>", method.InvokeUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>));
         }
 
         [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedWithNull()
+        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
@@ -1600,7 +514,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
+                method.InvokeUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
             }
             catch (ArgumentNullException e)
             {
@@ -1610,221 +524,6 @@ namespace MorseCode.BetterReflection.Tests
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
         }
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            Assert.AreEqual("<#= Enumerable.Range(0, n + 1).Sum() #>", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>));
-        }
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { <#= string.Join(", ", Enumerable.Range(1, n + 1).Select(i => i)) #> });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "System.Int32")) #> }, but expected <# if(n == 0) { #>no parameters<# } else { #>parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }<# } #>." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), <# if(n == 0) { #>new object[0]<# } else { #>new object[] { <#= string.Join(string.Empty, Enumerable.Range(1, n - 1).Select(i => i + ", ")) #>"<#= n #>" }<# } #>);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(string.Empty, Enumerable.Range(0, n - 1).Select(_ => "System.Int32, ")) #>System.String }, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            Assert.AreEqual("<#= Enumerable.Range(0, n + 1).Sum() #>", method.InvokeFullyUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>));
-        }
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            Assert.AreEqual("<#= Enumerable.Range(0, n + 1).Sum() #>", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>));
-        }
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { <#= string.Join(", ", Enumerable.Range(1, n + 1).Select(i => i)) #> });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "System.Int32")) #> }, but expected <# if(n == 0) { #>no parameters<# } else { #>parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }<# } #>." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, <#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string> method = typeInfo.GetMethod(o => (Func<<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => "int, ")) #>string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), <# if(n == 0) { #>new object[0]<# } else { #>new object[] { <#= string.Join(string.Empty, Enumerable.Range(1, n - 1).Select(i => i + ", ")) #>"<#= n #>" }<# } #>);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(string.Empty, Enumerable.Range(0, n - 1).Select(_ => "System.Int32, ")) #>System.String }, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
 
         [Test]
         public void MethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>Serialization()
@@ -1932,7 +631,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntyped()
+        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
@@ -1940,7 +639,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
+                method.InvokeUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
             }
             catch(Exception e)
             {
@@ -1952,7 +651,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
@@ -1960,7 +659,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
+                method.InvokeUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
             }
             catch (ArgumentNullException e)
             {
@@ -1970,254 +669,6 @@ namespace MorseCode.BetterReflection.Tests
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
         }
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("<#= n == 0 ? "0" : string.Join(", ", Enumerable.Range(1, n).Select(i => i)) #>", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { <#= string.Join(", ", Enumerable.Range(1, n + 1).Select(i => i)) #> });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "System.Int32")) #> }, but expected <# if(n == 0) { #>no parameters<# } else { #>parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }<# } #>." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), <# if(n == 0) { #>new object[0]<# } else { #>new object[] { <#= string.Join(string.Empty, Enumerable.Range(1, n - 1).Select(i => i + ", ")) #>"<#= n #>" }<# } #>);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(string.Empty, Enumerable.Range(0, n - 1).Select(_ => "System.Int32, ")) #>System.String }, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("<#= n == 0 ? "0" : string.Join(", ", Enumerable.Range(1, n).Select(i => i)) #>", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, <#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("<#= n == 0 ? "0" : string.Join(", ", Enumerable.Range(1, n).Select(i => i)) #>", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)<#= n == 0 ? "new object[0]" : ("new object[] { " + string.Join(", ", Enumerable.Range(1, n).Select(i => i)) + " }") #>);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { <#= string.Join(", ", Enumerable.Range(1, n + 1).Select(i => i)) #> });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(", ", Enumerable.Range(0, n + 1).Select(_ => "System.Int32")) #> }, but expected <# if(n == 0) { #>no parameters<# } else { #>parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }<# } #>." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# if(n > 0) { #>
-
-        [Test]
-        public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>InvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test<#= string.Join(string.Empty, Enumerable.Range(0, n).Select(_ => ", int")) #>> method = typeInfo.GetVoidMethod(o => (Action<#= n == 0 ? string.Empty : ("<" + string.Join(", ", Enumerable.Range(0, n).Select(_ => "int")) + ">") #>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), <# if(n == 0) { #>new object[0]<# } else { #>new object[] { <#= string.Join(string.Empty, Enumerable.Range(1, n - 1).Select(i => i + ", ")) #>"<#= n #>" }<# } #>);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { <#= string.Join(string.Empty, Enumerable.Range(0, n - 1).Select(_ => "System.Int32, ")) #>System.String }, but expected parameters of type { <#= string.Join(", ", Enumerable.Range(0, n).Select(_ => "System.Int32")) #> }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-<# } #>
 
         [Test]
         public void VoidMethodInfoWith<#= n == 0 ? "No" : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(GetNumberString(n)) #>Parameter<#= n == 1 ? string.Empty : "s" #>Serialization()
@@ -2257,23 +708,10 @@ namespace MorseCode.BetterReflection.Tests
             }
 
             // ReSharper disable UnusedMember.Local
-            public string TestMethodUniqueNoParameters()
-            // ReSharper restore UnusedMember.Local
-            {
-                return null;
-            }
-
-            // ReSharper disable UnusedMember.Local
             public void TestVoidMethodUnique(int parameter1, int parameter2, int parameter3)
             // ReSharper restore UnusedMember.Local
             {
                 throw new Exception(parameter1 + ", " + parameter2 + ", " + parameter3);
-            }
-
-            // ReSharper disable UnusedMember.Local
-            public void TestVoidMethodUniqueNoParameters()
-            // ReSharper restore UnusedMember.Local
-            {
             }
 <# Enumerable.Range(0, MaximumNumberOfParameters + 1).ToList().ForEach(n => { #>
 

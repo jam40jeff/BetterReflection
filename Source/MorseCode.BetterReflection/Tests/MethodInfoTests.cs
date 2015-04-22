@@ -33,7 +33,6 @@
 namespace MorseCode.BetterReflection.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -90,19 +89,19 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
 
             object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokePartiallyUntyped(new Test(), arguments));
+            Assert.AreEqual("5", method.InvokeUntyped(new Test(), arguments));
 			Assert.AreEqual(2, arguments[0]);
 			Assert.AreEqual(3, arguments[1]);
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
@@ -110,7 +109,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -119,222 +118,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -383,130 +166,6 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            object[] arguments = new object[] { 1, 2 };
-            Assert.AreEqual("5", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)arguments));
-			Assert.AreEqual(2, arguments[0]);
-			Assert.AreEqual(3, arguments[1]);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void ReflectionWrapperMethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestReflectionWrapperMethod");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
         public void MethodInfoPartiallyUntypedMethodInfo()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -552,16 +211,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void MethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
 
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 }));
+            Assert.AreEqual("3", method.InvokeUntyped(new Test(), new object[] { 1, 2 }));
         }
 
         [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void MethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
@@ -569,7 +228,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -578,213 +237,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -833,144 +285,6 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoInvokeExpectsNoParametersWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestMethodUniqueNoParameters");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
         public void VoidMethodInfoPartiallyUntypedMethodInfo()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
@@ -1016,7 +330,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntyped()
+        public void VoidMethodInfoPartiallyUntypedInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
@@ -1024,7 +338,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3 });
             }
             catch (Exception e)
             {
@@ -1036,7 +350,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoPartiallyUntypedInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
@@ -1044,7 +358,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3 });
             }
             catch (ArgumentNullException e)
             {
@@ -1053,246 +367,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoPartiallyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -1338,166 +412,6 @@ namespace MorseCode.BetterReflection.Tests
             IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
 
             Assert.AreEqual(typeof(void), method.ReturnType);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntyped()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoFullyUntypedInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo typeInfo = TypeInfoFactory.GetTypeInfo(typeof(Test));
-            IMethodInfo method = typeInfo.GetMethod("TestVoidMethodUnique");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoInvokeExpectsNoParametersWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test> method = typeInfo.GetMethod("TestVoidMethodUniqueNoParameters");
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -1575,16 +489,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithNoParametersInvokePartiallyUntyped()
+        public void MethodInfoWithNoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
 
-            Assert.AreEqual("0", method.InvokePartiallyUntyped(new Test(), new object[0]));
+            Assert.AreEqual("0", method.InvokeUntyped(new Test(), new object[0]));
         }
 
         [Test]
-        public void MethodInfoWithNoParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithNoParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
@@ -1592,7 +506,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[0]);
+                method.InvokeUntyped(null, new object[0]);
             }
             catch (ArgumentNullException e)
             {
@@ -1601,133 +515,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            Assert.AreEqual("0", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[0]));
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            Assert.AreEqual("0", method.InvokeFullyUntyped(new Test(), new object[0]));
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            Assert.AreEqual("0", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[0]));
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithNoParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, string> method = typeInfo.GetMethod(o => (Func<string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -1823,16 +610,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntyped()
+        public void MethodInfoWithOneParameterInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
 
-            Assert.AreEqual("1", method.InvokePartiallyUntyped(new Test(), new object[] { 1 }));
+            Assert.AreEqual("1", method.InvokeUntyped(new Test(), new object[] { 1 }));
         }
 
         [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithOneParameterInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
@@ -1840,7 +627,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1 });
+                method.InvokeUntyped(null, new object[] { 1 });
             }
             catch (ArgumentNullException e)
             {
@@ -1849,213 +636,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            Assert.AreEqual("1", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1 }));
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32 }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { "1" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.String }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            Assert.AreEqual("1", method.InvokeFullyUntyped(new Test(), new object[] { 1 }));
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            Assert.AreEqual("1", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1 }));
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32 }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithOneParameterInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, string> method = typeInfo.GetMethod(o => (Func<int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { "1" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.String }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -2151,16 +731,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntyped()
+        public void MethodInfoWithTwoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 }));
+            Assert.AreEqual("3", method.InvokeUntyped(new Test(), new object[] { 1, 2 }));
         }
 
         [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithTwoParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
@@ -2168,7 +748,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -2177,213 +757,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("3", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("3", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 }));
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithTwoParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -2479,16 +852,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntyped()
+        public void MethodInfoWithThreeParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("6", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 }));
+            Assert.AreEqual("6", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3 }));
         }
 
         [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithThreeParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
@@ -2496,7 +869,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3 });
             }
             catch (ArgumentNullException e)
             {
@@ -2505,213 +878,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("6", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 }));
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("6", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 }));
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("6", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 }));
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithThreeParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -2807,16 +973,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntyped()
+        public void MethodInfoWithFourParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("10", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 }));
+            Assert.AreEqual("10", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4 }));
         }
 
         [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithFourParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
@@ -2824,7 +990,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4 });
             }
             catch (ArgumentNullException e)
             {
@@ -2833,213 +999,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("10", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, "4" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("10", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("10", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFourParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, "4" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -3135,16 +1094,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntyped()
+        public void MethodInfoWithFiveParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("15", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 }));
+            Assert.AreEqual("15", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 }));
         }
 
         [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithFiveParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
@@ -3152,7 +1111,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5 });
             }
             catch (ArgumentNullException e)
             {
@@ -3161,213 +1120,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("15", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, "5" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("15", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("15", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 }));
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithFiveParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, "5" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -3463,16 +1215,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntyped()
+        public void MethodInfoWithSixParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("21", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 }));
+            Assert.AreEqual("21", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 }));
         }
 
         [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithSixParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
@@ -3480,7 +1232,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
             }
             catch (ArgumentNullException e)
             {
@@ -3489,213 +1241,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("21", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, "6" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("21", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("21", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSixParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, "6" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -3791,16 +1336,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntyped()
+        public void MethodInfoWithSevenParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("28", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 }));
+            Assert.AreEqual("28", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 }));
         }
 
         [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithSevenParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
@@ -3808,7 +1353,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
             }
             catch (ArgumentNullException e)
             {
@@ -3817,213 +1362,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("28", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, "7" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("28", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("28", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 }));
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithSevenParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, "7" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -4119,16 +1457,16 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntyped()
+        public void MethodInfoWithEightParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
 
-            Assert.AreEqual("36", method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
+            Assert.AreEqual("36", method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
         }
 
         [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedWithNull()
+        public void MethodInfoWithEightParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
@@ -4136,7 +1474,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
             }
             catch (ArgumentNullException e)
             {
@@ -4145,213 +1483,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("36", method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, "8" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("36", method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            Assert.AreEqual("36", method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void MethodInfoWithEightParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IMethodInfo<Test, int, int, int, int, int, int, int, int, string> method = typeInfo.GetMethod(o => (Func<int, int, int, int, int, int, int, int, string>)o.TestMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, "8" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -4458,7 +1589,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithNoParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithNoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
@@ -4466,7 +1597,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
+                method.InvokeUntyped(new Test(), new object[0]);
             }
             catch(Exception e)
             {
@@ -4478,7 +1609,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithNoParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithNoParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
@@ -4486,7 +1617,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[0]);
+                method.InvokeUntyped(null, new object[0]);
             }
             catch (ArgumentNullException e)
             {
@@ -4495,166 +1626,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[0]);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("0", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("0", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[0]);
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("0", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithNoParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test> method = typeInfo.GetVoidMethod(o => (Action)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32 }, but expected no parameters." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -4761,7 +1732,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntyped()
+        public void VoidMethodInfoWithOneParameterInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
@@ -4769,7 +1740,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1 });
+                method.InvokeUntyped(new Test(), new object[] { 1 });
             }
             catch(Exception e)
             {
@@ -4781,7 +1752,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithOneParameterInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
@@ -4789,7 +1760,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1 });
+                method.InvokeUntyped(null, new object[] { 1 });
             }
             catch (ArgumentNullException e)
             {
@@ -4798,246 +1769,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32 }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { "1" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.String }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32 }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithOneParameterInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int> method = typeInfo.GetVoidMethod(o => (Action<int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { "1" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.String }, but expected parameters of type { System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -5144,7 +1875,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithTwoParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
@@ -5152,7 +1883,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2 });
             }
             catch(Exception e)
             {
@@ -5164,7 +1895,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithTwoParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
@@ -5172,7 +1903,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2 });
+                method.InvokeUntyped(null, new object[] { 1, 2 });
             }
             catch (ArgumentNullException e)
             {
@@ -5181,246 +1912,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithTwoParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, "2" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -5527,7 +2018,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithThreeParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
@@ -5535,7 +2026,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3 });
             }
             catch(Exception e)
             {
@@ -5547,7 +2038,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithThreeParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
@@ -5555,7 +2046,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3 });
             }
             catch (ArgumentNullException e)
             {
@@ -5564,246 +2055,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithThreeParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, "3" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -5910,7 +2161,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithFourParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
@@ -5918,7 +2169,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4 });
             }
             catch(Exception e)
             {
@@ -5930,7 +2181,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithFourParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
@@ -5938,7 +2189,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4 });
             }
             catch (ArgumentNullException e)
             {
@@ -5947,246 +2198,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, "4" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFourParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, "4" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -6293,7 +2304,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithFiveParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
@@ -6301,7 +2312,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
             }
             catch(Exception e)
             {
@@ -6313,7 +2324,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithFiveParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
@@ -6321,7 +2332,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5 });
             }
             catch (ArgumentNullException e)
             {
@@ -6330,246 +2341,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, "5" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithFiveParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, "5" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -6676,7 +2447,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithSixParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
@@ -6684,7 +2455,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
             }
             catch(Exception e)
             {
@@ -6696,7 +2467,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithSixParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
@@ -6704,7 +2475,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
             }
             catch (ArgumentNullException e)
             {
@@ -6713,246 +2484,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, "6" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSixParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, "6" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -7059,7 +2590,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithSevenParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
@@ -7067,7 +2598,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
             }
             catch(Exception e)
             {
@@ -7079,7 +2610,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithSevenParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
@@ -7087,7 +2618,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
             }
             catch (ArgumentNullException e)
             {
@@ -7096,246 +2627,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, "7" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithSevenParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, "7" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -7442,7 +2733,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntyped()
+        public void VoidMethodInfoWithEightParametersInvokeUntyped()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
@@ -7450,7 +2741,7 @@ namespace MorseCode.BetterReflection.Tests
             Exception actual = null;
             try
             {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                method.InvokeUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
             }
             catch(Exception e)
             {
@@ -7462,7 +2753,7 @@ namespace MorseCode.BetterReflection.Tests
         }
 
         [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedWithNull()
+        public void VoidMethodInfoWithEightParametersInvokeUntypedWithNull()
         {
             ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
             IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
@@ -7470,7 +2761,7 @@ namespace MorseCode.BetterReflection.Tests
             ArgumentNullException actual = null;
             try
             {
-                method.InvokePartiallyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+                method.InvokeUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
             }
             catch (ArgumentNullException e)
             {
@@ -7479,246 +2770,6 @@ namespace MorseCode.BetterReflection.Tests
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokePartiallyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokePartiallyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, "8" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntyped()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedEnumerable()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            Exception actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch(Exception e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedEnumerableWithNull()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentNullException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(null, (IEnumerable<object>)new object[] { 1, 2, 3, 4, 5, 6, 7, 8 });
-            }
-            catch (ArgumentNullException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("o", actual.ParamName);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedNoParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[0]);
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received no parameters, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedWrongNumberOfParameters()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
-        }
-
-        [Test]
-        public void VoidMethodInfoWithEightParametersInvokeFullyUntypedMismatchedParameterTypes()
-        {
-            ITypeInfo<Test> typeInfo = TypeInfoFactory.GetTypeInfo<Test>();
-            IVoidMethodInfo<Test, int, int, int, int, int, int, int, int> method = typeInfo.GetVoidMethod(o => (Action<int, int, int, int, int, int, int, int>)o.TestVoidMethod);
-
-            ArgumentException actual = null;
-            try
-            {
-                method.InvokeFullyUntyped(new Test(), new object[] { 1, 2, 3, 4, 5, 6, 7, "8" });
-            }
-            catch (ArgumentException e)
-            {
-                actual = e;
-            }
-
-            Assert.IsNotNull(actual);
-            Assert.AreEqual("Received parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.String }, but expected parameters of type { System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32, System.Int32 }." + Environment.NewLine + "Parameter name: parameters", actual.Message);
         }
 
         [Test]
@@ -7758,23 +2809,10 @@ namespace MorseCode.BetterReflection.Tests
             }
 
             // ReSharper disable UnusedMember.Local
-            public string TestMethodUniqueNoParameters()
-            // ReSharper restore UnusedMember.Local
-            {
-                return null;
-            }
-
-            // ReSharper disable UnusedMember.Local
             public void TestVoidMethodUnique(int parameter1, int parameter2, int parameter3)
             // ReSharper restore UnusedMember.Local
             {
                 throw new Exception(parameter1 + ", " + parameter2 + ", " + parameter3);
-            }
-
-            // ReSharper disable UnusedMember.Local
-            public void TestVoidMethodUniqueNoParameters()
-            // ReSharper restore UnusedMember.Local
-            {
             }
 
             public string TestMethod()
