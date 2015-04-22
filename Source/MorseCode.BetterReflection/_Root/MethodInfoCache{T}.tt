@@ -83,6 +83,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> GetMethodInfo<<#= string.Join(string.Empty, Enumerable.Range(1, n).Select(i => "TParameter" + i + ", ")) #>TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> typedInfo = info as IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>;
             if (typedInfo == null)
@@ -104,6 +107,12 @@ namespace MorseCode.BetterReflection
                 m =>
                 {
                     ParameterInfo[] parameters = m.GetParameters();
+
+                    if (parameters.Any(p => p.IsOut || p.IsIn))
+                    {
+                        return new ReflectionWrapperMethodInfo<T>(methodInfo);
+                    }
+
                     if (m.ReturnType == typeof(void))
                     {
                         if (parameters.Length == 0)
@@ -133,6 +142,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> GetVoidMethodInfo<# if(n > 0) { #><<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "TParameter" + i)) #>><# } #>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> typedInfo = info as IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>;
             if (typedInfo == null)
@@ -147,6 +159,9 @@ namespace MorseCode.BetterReflection
 
         private static IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn> CreateMethodInfo<<#= string.Join(string.Empty, Enumerable.Range(1, n).Select(i => "TParameter" + i + ", ")) #>TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>>() != null);
+
             return new MethodInfo<T<#= this.GetTParametersString(n, true) #>, TReturn>(methodInfo);
         }
 <# }); #>
@@ -154,6 +169,9 @@ namespace MorseCode.BetterReflection
 
         private static IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>> CreateVoidMethodInfo<# if(n > 0) { #><<#= string.Join(", ", Enumerable.Range(1, n).Select(i => "TParameter" + i)) #>><# } #>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>>() != null);
+
             return new VoidMethodInfo<T<#= this.GetTParametersString(n, true) #>>(methodInfo);
         }
 <# }); #>

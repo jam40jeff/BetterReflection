@@ -34,10 +34,12 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// An interface representing type info for a type.
     /// </summary>
+    [ContractClass(typeof(TypeInfoInterfaceContract))]
     public interface ITypeInfo
     {
         #region Public Properties
@@ -62,44 +64,60 @@ namespace MorseCode.BetterReflection
         #region Public Methods and Operators
 
         /// <summary>the type represented by this type info
-        /// Gets a property info instance for each public instance property accessible through type the type represented by this type info.
+        /// Gets a property info instance for each public instance property accessible through the type represented by this type info.
         /// </summary>
         /// <returns>
-        /// An enumerable of property info instances for each public instance property accessible through type the type represented by this type info.
+        /// An enumerable of property info instances for each public instance property accessible through the type represented by this type info.
         /// </returns>
         IEnumerable<IPropertyInfo> GetProperties();
 
         /// <summary>
-        /// Gets a property info instance for the public instance property with name <paramref name="name"/> accessible through type the type represented by this type info.
+        /// Gets a property info instance for the public instance property with name <paramref name="name"/> accessible through the type represented by this type info.
         /// </summary>
         /// <param name="name">
         /// The name of the property for which to get property info.
         /// </param>
         /// <returns>
-        /// A property info instance for the public instance property with name <paramref name="name"/> accessible through type the type represented by this type info if
+        /// A property info instance for the public instance property with name <paramref name="name"/> accessible through the type represented by this type info if
         /// it exists, <c>null</c> otherwise.
         /// </returns>
         IPropertyInfo GetProperty(string name);
 
         /// <summary>
-        /// Gets a method info instance for each public instance method accessible through type the type represented by this type info.
+        /// Gets a method info instance for each public instance method accessible through the type represented by this type info.
         /// </summary>
         /// <returns>
-        /// An enumerable of method info instances for each public instance method accessible through type the type represented by this type info.
+        /// An enumerable of method info instances for each public instance method accessible through the type represented by this type info.
         /// </returns>
         IEnumerable<IMethodInfo> GetMethods();
 
         /// <summary>
-        /// Gets a method info instance for the public instance method with name <paramref name="name"/> accessible through type the type represented by this type info.
+        /// Gets a method info instance for the public instance method with name <paramref name="name"/> accessible through the type represented by this type info.
         /// </summary>
         /// <param name="name">
         /// The name of the method for which to get method info.
         /// </param>
         /// <returns>
-        /// A method info instance for the public instance method with name <paramref name="name"/> accessible through type the type represented by this type info if
+        /// A method info instance for the public instance method with name <paramref name="name"/> accessible through the type represented by this type info if
         /// it exists, <c>null</c> otherwise.
         /// </returns>
         IMethodInfo GetMethod(string name);
+
+        /// <summary>
+        /// Gets a method info instance for the public instance method with name <paramref name="name"/> and parameter types <paramref name="types"/> accessible through the type represented by this type info.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the method for which to get method info.
+        /// </param>
+        /// <param name="types">
+        /// An array of <see cref="System.Type"/> objects representing the number, order, and type of the parameters for the method to get, or an empty array of <see cref="System.Type"/> objects
+        /// (as provided by the <see cref="System.Type.EmptyTypes"/> field) to get a method that takes no parameters.
+        /// </param>
+        /// <returns>
+        /// A method info instance for the public instance method with name <paramref name="name"/> and parameter types <paramref name="types"/> accessible through the type represented by this type info if
+        /// it exists, <c>null</c> otherwise.
+        /// </returns>
+        IMethodInfo GetMethod(string name, Type[] types);
 
         #endregion
     }

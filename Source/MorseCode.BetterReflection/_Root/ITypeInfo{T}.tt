@@ -40,6 +40,7 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq.Expressions;
 
     /// <summary>
@@ -48,6 +49,7 @@ namespace MorseCode.BetterReflection
     /// <typeparam name="T">
     /// The type represented by this type info.
     /// </typeparam>
+    [ContractClass(typeof(TypeInfoInterfaceContract<>))]
     public interface ITypeInfo<T> : ITypeInfo
     {
         #region Public Methods and Operators

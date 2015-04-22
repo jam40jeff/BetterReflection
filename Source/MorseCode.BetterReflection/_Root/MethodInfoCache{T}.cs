@@ -117,6 +117,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TReturn> GetMethodInfo<TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TReturn> typedInfo = info as IMethodInfo<T, TReturn>;
             if (typedInfo == null)
@@ -129,6 +132,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TReturn> GetMethodInfo<TParameter1, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TReturn>;
             if (typedInfo == null)
@@ -141,6 +147,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TReturn> GetMethodInfo<TParameter1, TParameter2, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TReturn>;
             if (typedInfo == null)
@@ -153,6 +162,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>;
             if (typedInfo == null)
@@ -165,6 +177,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>;
             if (typedInfo == null)
@@ -177,6 +192,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>;
             if (typedInfo == null)
@@ -189,6 +207,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>;
             if (typedInfo == null)
@@ -201,6 +222,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>;
             if (typedInfo == null)
@@ -213,6 +237,9 @@ namespace MorseCode.BetterReflection
 
         internal static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> GetMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> typedInfo = info as IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>;
             if (typedInfo == null)
@@ -233,6 +260,12 @@ namespace MorseCode.BetterReflection
                 m =>
                 {
                     ParameterInfo[] parameters = m.GetParameters();
+
+                    if (parameters.Any(p => p.ParameterType.IsByRef))
+                    {
+                        return new ReflectionWrapperMethodInfo<T>(methodInfo);
+                    }
+
                     if (m.ReturnType == typeof(void))
                     {
                         if (parameters.Length == 0)
@@ -261,6 +294,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T> GetVoidMethodInfo(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T> typedInfo = info as IVoidMethodInfo<T>;
             if (typedInfo == null)
@@ -273,6 +309,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1> GetVoidMethodInfo<TParameter1>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1> typedInfo = info as IVoidMethodInfo<T, TParameter1>;
             if (typedInfo == null)
@@ -285,6 +324,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2> GetVoidMethodInfo<TParameter1, TParameter2>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2>;
             if (typedInfo == null)
@@ -297,6 +339,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3>;
             if (typedInfo == null)
@@ -309,6 +354,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>;
             if (typedInfo == null)
@@ -321,6 +369,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>;
             if (typedInfo == null)
@@ -333,6 +384,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>;
             if (typedInfo == null)
@@ -345,6 +399,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>;
             if (typedInfo == null)
@@ -357,6 +414,9 @@ namespace MorseCode.BetterReflection
 
         internal static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> GetVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>>() != null);
+
             IMethodInfo<T> info = GetMethodInfo(methodInfo);
             IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> typedInfo = info as IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>;
             if (typedInfo == null)
@@ -369,91 +429,145 @@ namespace MorseCode.BetterReflection
 
         private static IMethodInfo<T, TReturn> CreateMethodInfo<TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TReturn>>() != null);
+
             return new MethodInfo<T, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TReturn> CreateMethodInfo<TParameter1, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TReturn> CreateMethodInfo<TParameter1, TParameter2, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TReturn>(methodInfo);
         }
 
         private static IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn> CreateMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>>() != null);
+
             return new MethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8, TReturn>(methodInfo);
         }
 
         private static IVoidMethodInfo<T> CreateVoidMethodInfo(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T>>() != null);
+
             return new VoidMethodInfo<T>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1> CreateVoidMethodInfo<TParameter1>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1>>() != null);
+
             return new VoidMethodInfo<T, TParameter1>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2> CreateVoidMethodInfo<TParameter1, TParameter2>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7>(methodInfo);
         }
 
         private static IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8> CreateVoidMethodInfo<TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(MethodInfo methodInfo)
         {
+            Contract.Requires(methodInfo != null);
+            Contract.Ensures(Contract.Result<IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>>() != null);
+
             return new VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5, TParameter6, TParameter7, TParameter8>(methodInfo);
         }
 

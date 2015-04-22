@@ -1,7 +1,7 @@
 ﻿#region License
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5}.cs" company="MorseCode Software">
+// <copyright file="ReflectionWrapperMethodInfo{T}.cs" company="MorseCode Software">
 // Copyright (c) 2015 MorseCode Software
 // </copyright>
 // <summary>
@@ -43,31 +43,44 @@ namespace MorseCode.BetterReflection
     using MorseCode.FrameworkExtensions;
 
     [Serializable]
-    internal class VoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> : IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>, ISerializable
+    internal class ReflectionWrapperMethodInfo<T> : IMethodInfo<T>, ISerializable
     {
         #region Fields
 
-        private readonly Lazy<Action<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>> invoker;
-
         private readonly MethodInfo methodInfo;
 
-        private readonly IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5> methodInfoInstance;
+        private readonly IMethodInfo<T> methodInfoInstance;
+
+        private readonly Lazy<IReadOnlyList<ParameterInfo>> methodParameters;
+        private readonly Lazy<IReadOnlyList<Type>> parameterTypes;
+        private readonly Lazy<IReadOnlyList<Type>> invokeParameterTypes;
+        private readonly Lazy<Type> returnType;
 
         #endregion
 
         #region Constructors and Destructors
 
-        public VoidMethodInfo(MethodInfo methodInfo)
+        public ReflectionWrapperMethodInfo(MethodInfo methodInfo)
         {
+            Contract.Requires<ArgumentNullException>(methodInfo != null);
+            Contract.Ensures(this.methodParameters != null);
+            Contract.Ensures(this.parameterTypes != null);
+            Contract.Ensures(this.invokeParameterTypes != null);
+            Contract.Ensures(this.returnType != null);
+            Contract.Ensures(this.methodInfoInstance != null);
+
             this.methodInfo = methodInfo;
 
-            this.methodInfoInstance = this;
+            this.methodParameters = new Lazy<IReadOnlyList<ParameterInfo>>(methodInfo.GetParameters);
+            this.parameterTypes = new Lazy<IReadOnlyList<Type>>(() => this.methodParameters.Value.Select(p => p.ParameterType).ToArray());
+            this.invokeParameterTypes = new Lazy<IReadOnlyList<Type>>(() => this.parameterTypes.Value.Select(t => t.IsByRef ? t.GetElementType() : t).ToArray());
+            this.returnType = new Lazy<Type>(() => methodInfo.ReturnType);
 
-            this.invoker = new Lazy<Action<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>>(() => DelegateUtility.CreateDelegate<Action<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>>(this.methodInfo));
+            this.methodInfoInstance = this;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VoidMethodInfo{T,TParameter1,TParameter2,TParameter3,TParameter4,TParameter5}"/> class from serialized data.
+        /// Initializes a new instance of the <see cref="ReflectionWrapperMethodInfo{T}"/> class from serialized data.
         /// </summary>
         /// <param name="info">
         /// The serialization info.
@@ -77,7 +90,7 @@ namespace MorseCode.BetterReflection
         /// </param>
         [ContractVerification(false)]
         // ReSharper disable UnusedParameter.Local
-        protected VoidMethodInfo(SerializationInfo info, StreamingContext context)
+        protected ReflectionWrapperMethodInfo(SerializationInfo info, StreamingContext context)
             // ReSharper restore UnusedParameter.Local
             : this((MethodInfo)info.GetValue("m", typeof(MethodInfo)))
         {
@@ -115,7 +128,7 @@ namespace MorseCode.BetterReflection
         {
             get
             {
-                return new[] { typeof(TParameter1), typeof(TParameter2), typeof(TParameter3), typeof(TParameter4), typeof(TParameter5) };
+                return this.parameterTypes.Value;
             }
         }
 
@@ -123,7 +136,7 @@ namespace MorseCode.BetterReflection
         {
             get
             {
-                return typeof(void);
+                return this.returnType.Value;
             }
         }
 
@@ -150,11 +163,6 @@ namespace MorseCode.BetterReflection
 
         #region Explicit Interface Methods
 
-        void IVoidMethodInfo<T, TParameter1, TParameter2, TParameter3, TParameter4, TParameter5>.Invoke(T o, TParameter1 parameter1, TParameter2 parameter2, TParameter3 parameter3, TParameter4 parameter4, TParameter5 parameter5)
-        {
-            this.invoker.Value(o, parameter1, parameter2, parameter3, parameter4, parameter5);
-        }
-
         object IMethodInfo.InvokeFullyUntyped(object o, IEnumerable<object> parameters)
         {
             if (!(o is T))
@@ -172,15 +180,21 @@ namespace MorseCode.BetterReflection
 
         object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
         {
-            IReadOnlyList<object> parameterList = (parameters ?? new object[0]).ToArray();
-            if (parameterList.Count != 5 || !(parameterList[0] is TParameter1) || !(parameterList[1] is TParameter2) || !(parameterList[2] is TParameter3) || !(parameterList[3] is TParameter4) || !(parameterList[4] is TParameter5))
+            IList<object> parameterList = parameters as IList<object>;
+            object[] parameterArray = (parameters ?? new object[0]).ToArray();
+            if (parameterArray.Length != this.methodParameters.Value.Count || !parameterArray.Select((p, i) => new { Parameter = p, Index = i }).All(parameterAndIndex => this.invokeParameterTypes.Value[parameterAndIndex.Index].IsInstanceOfType(parameterAndIndex.Parameter) || (parameterAndIndex.Parameter == null && (!this.invokeParameterTypes.Value[parameterAndIndex.Index].IsValueType || this.methodParameters.Value[parameterAndIndex.Index].IsOut))))
             {
-                throw new ArgumentException("Received " + (parameterList.Count < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterList.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + typeof(TParameter1) + ", " + typeof(TParameter2) + ", " + typeof(TParameter3) + ", " + typeof(TParameter4) + ", " + typeof(TParameter5) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
+                throw new ArgumentException("Received " + (parameterArray.Length < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterArray.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + string.Join(", ", (this.invokeParameterTypes.Value ?? new Type[0]).Select(t => t.FullName)) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
             }
 
-            this.methodInfoInstance.Invoke(o, (TParameter1)parameterList[0], (TParameter2)parameterList[1], (TParameter3)parameterList[2], (TParameter4)parameterList[3], (TParameter5)parameterList[4]);
+            object result = this.methodInfo.Invoke(o, parameterArray);
 
-            return null;
+            if (parameterList != null)
+            {
+                parameterArray.ForEach((p, i) => parameterList[i] = p);
+            }
+
+            return result;
         }
 
         object IMethodInfo<T>.InvokePartiallyUntyped(T o, params object[] parameters)
@@ -189,5 +203,15 @@ namespace MorseCode.BetterReflection
         }
 
         #endregion
+
+        [ContractInvariantMethod]
+        private void CodeContractsInvariants()
+        {
+            Contract.Invariant(this.methodParameters != null);
+            Contract.Invariant(this.parameterTypes != null);
+            Contract.Invariant(this.invokeParameterTypes != null);
+            Contract.Invariant(this.returnType != null);
+            Contract.Invariant(this.methodInfoInstance != null);
+        }
     }
 }

@@ -91,7 +91,7 @@ namespace MorseCode.BetterReflection
             IReadWritePropertyInfo<T, TProperty> typedInfo = info as IReadWritePropertyInfo<T, TProperty>;
             if (typedInfo == null)
             {
-                throw new InvalidOperationException("An unknown error occurred obtaining readable and writable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+                throw new InvalidOperationException("An unknown error occurred obtaining readable and writable property info for property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
             }
 
             return typedInfo;
@@ -117,7 +117,7 @@ namespace MorseCode.BetterReflection
             IReadablePropertyInfo<T, TProperty> typedInfo = info as IReadablePropertyInfo<T, TProperty>;
             if (typedInfo == null)
             {
-                throw new InvalidOperationException("An unknown error occurred obtaining readable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+                throw new InvalidOperationException("An unknown error occurred obtaining readable property info for property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
             }
 
             return typedInfo;
@@ -143,7 +143,7 @@ namespace MorseCode.BetterReflection
             IWritablePropertyInfo<T, TProperty> typedInfo = info as IWritablePropertyInfo<T, TProperty>;
             if (typedInfo == null)
             {
-                throw new InvalidOperationException("An unknown error occurred obtaining writable property info fro property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
+                throw new InvalidOperationException("An unknown error occurred obtaining writable property info for property with name " + info.PropertyInfo.Name + " on type " + typeof(T).FullName + ".");
             }
 
             return typedInfo;

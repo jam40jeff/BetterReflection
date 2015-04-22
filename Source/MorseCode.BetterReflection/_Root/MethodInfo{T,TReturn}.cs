@@ -172,10 +172,10 @@ namespace MorseCode.BetterReflection
 
         object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
         {
-            List<object> parameterList = (parameters ?? new object[0]).ToList();
+            IReadOnlyList<object> parameterList = (parameters ?? new object[0]).ToArray();
             if (parameterList.Count != 0)
             {
-                throw new ArgumentException("Received parameters of type {" + string.Join(",", (parameters ?? new Type[0]).Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
+                throw new ArgumentException("Received parameters of type { " + string.Join(", ", parameterList.Select(p => p.GetType().FullName)) + " }, but expected no parameters.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
             }
 
             return this.methodInfoInstance.Invoke(o);

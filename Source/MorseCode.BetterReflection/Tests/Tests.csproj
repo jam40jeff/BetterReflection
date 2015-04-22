@@ -33,6 +33,14 @@
     <Reference Include="Fasterflect">
       <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
+    <Reference Include="MorseCode.FrameworkExtensions, Version=1.0.50.0, Culture=neutral, PublicKeyToken=214321fcab92c5da, processorArchitecture=MSIL">
+      <HintPath>..\packages\MorseCode.FrameworkExtensions.1.0.50.0\lib\net45\MorseCode.FrameworkExtensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MorseCode.ITask, Version=1.0.61.0, Culture=neutral, PublicKeyToken=214321fcab92c5da, processorArchitecture=MSIL">
+      <HintPath>..\packages\MorseCode.ITask.1.0.61.0\lib\net45\MorseCode.ITask.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -45,19 +53,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MethodInfoTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodInfoTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sandbox.cs" />
+    <Compile Include="TypeInfoTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="MethodInfoTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodInfoTests.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
+    <None Include="Utilities.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\_Root\_Root.csproj">
       <Project>{16116738-3148-401D-B99D-AFD99D7169A2}</Project>
       <Name>_Root</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

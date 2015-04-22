@@ -54,7 +54,7 @@ namespace MorseCode.BetterReflection
 
         static TypeInfoFactory()
         {
-            GetTypeInfoGenericMethodDefinition = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => GetTypeInfo<object>());
+            GetTypeInfoGenericMethodDefinition = StaticReflection.GetInScopeMethodInfoFromMethodCallInternal(() => GetTypeInfo<object>()).GetGenericMethodDefinition();
         }
 
         #endregion

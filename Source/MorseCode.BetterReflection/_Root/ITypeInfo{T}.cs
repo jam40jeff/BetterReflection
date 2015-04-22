@@ -34,6 +34,7 @@ namespace MorseCode.BetterReflection
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq.Expressions;
 
     /// <summary>
@@ -42,6 +43,7 @@ namespace MorseCode.BetterReflection
     /// <typeparam name="T">
     /// The type represented by this type info.
     /// </typeparam>
+    [ContractClass(typeof(TypeInfoInterfaceContract<>))]
     public interface ITypeInfo<T> : ITypeInfo
     {
         #region Public Methods and Operators
@@ -127,6 +129,22 @@ namespace MorseCode.BetterReflection
         /// it exists, <c>null</c> otherwise.
         /// </returns>
         new IMethodInfo<T> GetMethod(string name);
+
+        /// <summary>
+        /// Gets a method info instance for the public instance method with name <paramref name="name"/> and parameter types <paramref name="types"/> accessible through type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the method for which to get method info.
+        /// </param>
+        /// <param name="types">
+        /// An array of <see cref="Type"/> objects representing the number, order, and type of the parameters for the method to get, or an empty array of <see cref="Type"/> objects
+        /// (as provided by the <see cref="Type.EmptyTypes"/> field) to get a method that takes no parameters.
+        /// </param>
+        /// <returns>
+        /// A method info instance for the public instance method with name <paramref name="name"/> and parameter types <paramref name="types"/> accessible through type <typeparamref name="T"/> if
+        /// it exists, <c>null</c> otherwise.
+        /// </returns>
+        new IMethodInfo<T> GetMethod(string name, Type[] types);
 
         /// <summary>
         /// Gets a method info instance for the method represented by <paramref name="methodExpression"/>.

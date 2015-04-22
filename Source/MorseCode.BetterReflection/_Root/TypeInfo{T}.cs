@@ -129,7 +129,7 @@ namespace MorseCode.BetterReflection
 
         IEnumerable<IPropertyInfo<T>> ITypeInfo<T>.GetProperties()
         {
-            return typeof(T).GetProperties().Select(PropertyInfoCache<T>.GetPropertyInfo);
+            return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Select(PropertyInfoCache<T>.GetPropertyInfo);
         }
 
         IEnumerable<IPropertyInfo> ITypeInfo.GetProperties()
@@ -144,23 +144,49 @@ namespace MorseCode.BetterReflection
 
         IPropertyInfo<T> ITypeInfo<T>.GetProperty(string name)
         {
-            PropertyInfo propertyInfo = typeof(T).GetProperty(name);
-            return propertyInfo == null ? null : PropertyInfoCache<T>.GetPropertyInfo(propertyInfo);
+            PropertyInfo propertyInfo = typeof(T).GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException("No public instance property was found with name " + name + " on type " + typeof(T).FullName + ".");
+            }
+
+            return PropertyInfoCache<T>.GetPropertyInfo(propertyInfo);
         }
 
         IReadablePropertyInfo<T, TProperty> ITypeInfo<T>.GetReadableProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
-            return PropertyInfoCache<T>.GetReadablePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
+            PropertyInfo propertyInfo = GetPropertyInfo(propertyExpression);
+
+            if (propertyInfo.GetMethod == null || propertyInfo.GetMethod.IsStatic || !propertyInfo.GetMethod.IsPublic)
+            {
+                throw new InvalidOperationException("Property with name " + propertyInfo.Name + " on type " + typeof(T).FullName + " is not readable.");
+            }
+
+            return PropertyInfoCache<T>.GetReadablePropertyInfo<TProperty>(propertyInfo);
         }
 
         IWritablePropertyInfo<T, TProperty> ITypeInfo<T>.GetWritableProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
-            return PropertyInfoCache<T>.GetWritablePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
+            PropertyInfo propertyInfo = GetPropertyInfo(propertyExpression);
+
+            if (propertyInfo.SetMethod == null || propertyInfo.SetMethod.IsStatic || !propertyInfo.SetMethod.IsPublic)
+            {
+                throw new InvalidOperationException("Property with name " + propertyInfo.Name + " on type " + typeof(T).FullName + " is not writable.");
+            }
+
+            return PropertyInfoCache<T>.GetWritablePropertyInfo<TProperty>(propertyInfo);
         }
 
         IReadWritePropertyInfo<T, TProperty> ITypeInfo<T>.GetReadWriteProperty<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
-            return PropertyInfoCache<T>.GetReadWritePropertyInfo<TProperty>(GetPropertyInfo(propertyExpression));
+            PropertyInfo propertyInfo = GetPropertyInfo(propertyExpression);
+
+            if (propertyInfo.GetMethod == null || propertyInfo.GetMethod.IsStatic || !propertyInfo.GetMethod.IsPublic || propertyInfo.SetMethod == null || propertyInfo.SetMethod.IsStatic || !propertyInfo.SetMethod.IsPublic)
+            {
+                throw new InvalidOperationException("Property with name " + propertyInfo.Name + " on type " + typeof(T).FullName + " is not readable and writable.");
+            }
+
+            return PropertyInfoCache<T>.GetReadWritePropertyInfo<TProperty>(propertyInfo);
         }
 
         IEnumerable<IMethodInfo> ITypeInfo.GetMethods()
@@ -170,7 +196,7 @@ namespace MorseCode.BetterReflection
 
         IEnumerable<IMethodInfo<T>> ITypeInfo<T>.GetMethods()
         {
-            return typeof(T).GetMethods().Select(MethodInfoCache<T>.GetMethodInfo);
+            return typeof(T).GetMethods(BindingFlags.Instance | BindingFlags.Public).Select(MethodInfoCache<T>.GetMethodInfo);
         }
 
         IMethodInfo ITypeInfo.GetMethod(string name)
@@ -180,8 +206,29 @@ namespace MorseCode.BetterReflection
 
         IMethodInfo<T> ITypeInfo<T>.GetMethod(string name)
         {
-            MethodInfo methodInfo = typeof(T).GetMethod(name);
-            return methodInfo == null ? null : MethodInfoCache<T>.GetMethodInfo(methodInfo);
+            MethodInfo methodInfo = typeof(T).GetMethod(name, BindingFlags.Instance | BindingFlags.Public);
+            if (methodInfo == null)
+            {
+                throw new ArgumentException("No public instance method was found with name " + name + " on type " + typeof(T).FullName + ".");
+            }
+
+            return MethodInfoCache<T>.GetMethodInfo(methodInfo);
+        }
+
+        IMethodInfo ITypeInfo.GetMethod(string name, Type[] types)
+        {
+            return this.typeInfo.GetMethod(name, types);
+        }
+
+        IMethodInfo<T> ITypeInfo<T>.GetMethod(string name, Type[] types)
+        {
+            MethodInfo methodInfo = typeof(T).GetMethod(name, types);
+            if (methodInfo == null || methodInfo.IsStatic || !methodInfo.IsPublic)
+            {
+                throw new ArgumentException("No public instance method was found with name " + name + " and types { " + string.Join(", ", types.Select(t => t.FullName)) + " } on type " + typeof(T).FullName + ".");
+            }
+
+            return MethodInfoCache<T>.GetMethodInfo(methodInfo);
         }
 
         IMethodInfo<T, TReturn> ITypeInfo<T>.GetMethod<TReturn>(Expression<Func<T, Func<TReturn>>> methodExpression)
@@ -294,11 +341,17 @@ namespace MorseCode.BetterReflection
 
         private static MethodInfo GetMethodInfo<TMethod>(Expression<Func<T, TMethod>> methodExpression)
         {
+            Contract.Requires(methodExpression != null);
+            Contract.Ensures(Contract.Result<MethodInfo>() != null);
+
             return StaticReflection<T>.GetMethodInfoInternal(methodExpression);
         }
 
         private static PropertyInfo GetPropertyInfo<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
+            Contract.Requires(propertyExpression != null);
+            Contract.Ensures(Contract.Result<PropertyInfo>() != null);
+
             MemberInfo memberInfo = StaticReflection<T>.GetMemberInfoInternal(propertyExpression);
             PropertyInfo propertyInfo = memberInfo as PropertyInfo;
             if (propertyInfo == null)

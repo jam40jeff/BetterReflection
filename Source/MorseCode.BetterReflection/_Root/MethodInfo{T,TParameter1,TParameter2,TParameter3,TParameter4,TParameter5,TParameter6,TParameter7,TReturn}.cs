@@ -172,10 +172,10 @@ namespace MorseCode.BetterReflection
 
         object IMethodInfo<T>.InvokePartiallyUntyped(T o, IEnumerable<object> parameters)
         {
-            List<object> parameterList = (parameters ?? new object[0]).ToList();
+            IReadOnlyList<object> parameterList = (parameters ?? new object[0]).ToArray();
             if (parameterList.Count != 7 || !(parameterList[0] is TParameter1) || !(parameterList[1] is TParameter2) || !(parameterList[2] is TParameter3) || !(parameterList[3] is TParameter4) || !(parameterList[4] is TParameter5) || !(parameterList[5] is TParameter6) || !(parameterList[6] is TParameter7))
             {
-                throw new ArgumentException("Received parameters of type {" + string.Join(",", (parameters ?? new Type[0]).Select(p => p.GetType().FullName)) + "}, was of type " + o.GetType().FullName + ", but expected parameters of type { " + typeof(TParameter1) + ", " + typeof(TParameter2) + ", " + typeof(TParameter3) + ", " + typeof(TParameter4) + ", " + typeof(TParameter5) + ", " + typeof(TParameter6) + ", " + typeof(TParameter7) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => o).Name);
+                throw new ArgumentException("Received " + (parameterList.Count < 1 ? "no parameters" : ("parameters of type { " + string.Join(", ", parameterList.Select(p => p.GetType().FullName)) + " }")) + ", but expected parameters of type { " + typeof(TParameter1) + ", " + typeof(TParameter2) + ", " + typeof(TParameter3) + ", " + typeof(TParameter4) + ", " + typeof(TParameter5) + ", " + typeof(TParameter6) + ", " + typeof(TParameter7) + " }.", StaticReflection.GetInScopeMemberInfoInternal(() => parameters).Name);
             }
 
             return this.methodInfoInstance.Invoke(o, (TParameter1)parameterList[0], (TParameter2)parameterList[1], (TParameter3)parameterList[2], (TParameter4)parameterList[3], (TParameter5)parameterList[4], (TParameter6)parameterList[5], (TParameter7)parameterList[6]);

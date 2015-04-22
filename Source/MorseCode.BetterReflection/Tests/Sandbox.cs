@@ -51,6 +51,7 @@ namespace MorseCode.BetterReflection.Tests
     using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 
     [TestFixture]
+    [Ignore("Integration tests.")]
     public class Sandbox
     {
         #region Fields
